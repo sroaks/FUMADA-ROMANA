@@ -13,12 +13,9 @@ ventana = pygame.display.set_mode((ancho, alto))
 pygame.display.set_caption("SPQR")
 clock = pygame.time.Clock()
 """
-lista_de_meteoritos=["recursos/METEORITOS/CCC.png","recursos/METEORITOS/I.png","recursos/METEORITOS/IV.png","recursos/METEORITOS/L.png","recursos/METEORITOS/MIX.png","recursos/METEORITOS/XDV.png"]
-meteoritos_imagenes=[]
-for img in lista_de_meteoritos:
-    meteoritos_imagenes.append(pygame.image.load(img).convert_alpha())  
-
 """
+# ZONA DE DECLARAR IMAGENES
+
 
 all_sprites = pygame.sprite.Group() # GRUPO PARA LA NAVE
 prueba_list = pygame.sprite.Group()
@@ -31,11 +28,11 @@ all_sprites.add(nave)
 #all_sprites.add(meteorito)
 
 for n in range(5): # iteramos sobre un rango de 5 para crear varios meteoritos
-    prueba=Prueba()
+    prueba = Prueba()
     all_sprites.add(prueba)
     prueba_list.add(prueba)
 
-
+# -----------------------------------------------
 
 GAME_OVER = True
 STAY_ALIVE = True
@@ -50,7 +47,7 @@ while STAY_ALIVE:
     all_sprites.update() # meto all_sprites
 
     fondo = pygame.image.load("recursos/fondo.png").convert()
-    ventana.blit(fondo, [0, 0])
+    ventana.blit(fondo, [0, 0]) #dibujar muchas imágenes en otra
 
     all_sprites.draw(ventana) # dibujo all_sprites
   

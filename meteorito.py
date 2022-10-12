@@ -26,10 +26,10 @@ class Meteorito(pygame.sprite.Sprite):
         self.speedx = random.randrange(5, 10)
     
     def update(self):
-            self.rect.centerx -= self.speedx
-            self.rect.centery += self.speedy
-            #en el caso de que se salga que aparezca de nuevo
-            if self.rect.centery < -50 or self.rect.centerx < -50 or self.rect.y > ancho + 50 : 
-                self.rect.centerx = 750 # X
-                self.rect.centery= random.randrange(25, 575)
-                self.speedx = random.randrange(5, 10)
+        self.rect.centerx -= self.speedx
+        self.rect.centery += self.speedy
+        #en el caso de que se salga que aparezca de nuevo
+        if self.rect.centery < -50 or self.rect.centerx < -50 or self.rect.y > ancho + 50 : 
+            self.rect.centerx = 750 # X
+            self.rect.centery= random.randrange(25, 575)
+            self.speedx = random.randrange(5, 10)
