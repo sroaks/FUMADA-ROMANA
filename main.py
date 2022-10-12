@@ -1,4 +1,4 @@
-import pygame
+import pygame, random
 from nave import *
 from meteorito import *
 from pruebas import *
@@ -12,18 +12,28 @@ pygame.init()
 ventana = pygame.display.set_mode((ancho, alto))
 pygame.display.set_caption("SPQR")
 clock = pygame.time.Clock()
+"""
+lista_de_meteoritos=["recursos/METEORITOS/CCC.png","recursos/METEORITOS/I.png","recursos/METEORITOS/IV.png","recursos/METEORITOS/L.png","recursos/METEORITOS/MIX.png","recursos/METEORITOS/XDV.png"]
+meteoritos_imagenes=[]
+for img in lista_de_meteoritos:
+    meteoritos_imagenes.append(pygame.image.load(img).convert_alpha())  
 
 """
-"""
-           
+
 all_sprites = pygame.sprite.Group() # GRUPO PARA LA NAVE
-lista_de_meteoritos = pygame.sprite.Group() # '' / METEORITOS
+prueba_list = pygame.sprite.Group()
+#lista_de_meteoritos = pygame.sprite.Group() # '' / METEORITOS
+
 nave = Nave() # crea la nave para meterla en all_sprites
 all_sprites.add(nave)
-meteorito = Meteorito() # crea el meteorito para meterlo en all_sprites
-all_sprites.add(meteorito)
-prueba=Prueba()
-all_sprites.add(prueba)
+
+#meteorito = Meteorito() # crea el meteorito para meterlo en all_sprites
+#all_sprites.add(meteorito)
+
+for n in range(5): # iteramos sobre un rango de 5 para crear varios meteoritos
+    prueba=Prueba()
+    all_sprites.add(prueba)
+    prueba_list.add(prueba)
 
 
 
