@@ -63,15 +63,23 @@ class Meteoritos(pygame.sprite.Sprite):
         self.speedx = random.randrange(5, 10)
         # meto aquí esto ya que si lo pongo en linea 56 me casca [es un parche, no me bajes nota Pigmonchu por fa plis]
         self.image = random.choice(meteoritos_imagenes)
+        self.angulo = random.randrange(0,359)
+        self.rotate = pygame.transform.rotate(self.image,self.angulo)
+        self.rotate_vel = random.randrange(1,20) 
     
     def update(self):
         self.rect.centerx -= self.speedx
         self.rect.centery += self.speedy
+        self.angulo += self.rotate_vel
+
         #en el caso de que se salga que aparezca de nuevo
         if self.rect.centery < -50 or self.rect.centerx < -50 or self.rect.centery > ancho + 50 : 
             self.rect.centerx = 750 # X
             self.rect.centery= random.randrange(25, 575)
             self.speedx = random.randrange(5, 10)
+            self.angulo = random.randrange(0,359)
+            self.rotate = pygame.transform.rotate(self.image,self.angulo)
+            self.rotate_vel = random.randrange(1,20)
 
 
 # ZONA DE DECLARAR IMAGENES
