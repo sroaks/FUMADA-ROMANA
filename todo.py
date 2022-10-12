@@ -53,14 +53,16 @@ class Nave(pygame.sprite.Sprite): # Clase base simple para objetos de juego visi
 class Meteoritos(pygame.sprite.Sprite):
     def __init__(self):
         super().__init__()
+        self.image = pygame.image.load("recursos/METEORITOS/CCC.png").convert_alpha()
         self.rect = self.image.get_rect()
         self.image.set_colorkey(negro)
-        self.image = random.choice(meteoritos_imagenes)
         self.rect.centerx = 750 # X
         self.rect.centery= random.randrange(25, 575) # Y
         # A DETERMINAR LA VELOCIDAD
         self.speedy = 0 #random.randrange(-5, 5)
         self.speedx = random.randrange(5, 10)
+        # meto aquí esto ya que si lo pongo en linea 56 me casca [es un parche, no me bajes nota Pigmonchu por fa plis]
+        self.image = random.choice(meteoritos_imagenes)
     
     def update(self):
         self.rect.centerx -= self.speedx
@@ -70,6 +72,7 @@ class Meteoritos(pygame.sprite.Sprite):
             self.rect.centerx = 750 # X
             self.rect.centery= random.randrange(25, 575)
             self.speedx = random.randrange(5, 10)
+
 
 # ZONA DE DECLARAR IMAGENES
 
