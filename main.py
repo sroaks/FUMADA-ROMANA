@@ -1,6 +1,7 @@
 import pygame
 from nave import *
 from meteorito import *
+from pruebas import *
 
 ancho = 800
 alto = 600
@@ -8,18 +9,22 @@ negro = (0, 0, 0)
 blanco = (255, 255, 255)
 
 pygame.init()
-screen = pygame.display.set_mode((ancho, alto))
+ventana = pygame.display.set_mode((ancho, alto))
 pygame.display.set_caption("SPQR")
 clock = pygame.time.Clock()
+
 """
 """
-
-
-             
-all_sprites = pygame.sprite.Group()
-lista_de_meteoritos = pygame.sprite.Group()
-nave = Nave()
+           
+all_sprites = pygame.sprite.Group() # GRUPO PARA LA NAVE
+lista_de_meteoritos = pygame.sprite.Group() # '' / METEORITOS
+nave = Nave() # crea la nave para meterla en all_sprites
 all_sprites.add(nave)
+meteorito = Meteorito() # crea el meteorito para meterlo en all_sprites
+all_sprites.add(meteorito)
+prueba=Prueba()
+all_sprites.add(prueba)
+
 
 
 GAME_OVER = True
@@ -29,12 +34,18 @@ while STAY_ALIVE:
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             STAY_ALIVE = False
-            
-    all_sprites.update()
     
+    #ventana.fill((blanco))
+      
+    all_sprites.update() # meto all_sprites
+
     fondo = pygame.image.load("recursos/fondo.png").convert()
-    screen.blit(fondo, [0, 0])
-    all_sprites.draw(screen)
+    ventana.blit(fondo, [0, 0])
+
+    all_sprites.draw(ventana) # dibujo all_sprites
+  
+    #pygame.draw.rect(ventana, (negro),(ancho/2,alto/2, 50, 50)) probando las capas.
+
     pygame.display.flip()
 pygame.quit()
 

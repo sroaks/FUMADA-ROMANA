@@ -7,14 +7,14 @@ blanco = (255, 255, 255)
 """
 """
 
-class Nave(pygame.sprite.Sprite):
-    def __init__(self):
-        super().__init__()
+class Nave(pygame.sprite.Sprite): # Clase base simple para objetos de juego visibles.
+    def __init__(self): # inicio la clase
+        super().__init__() #  superclase sprite
         self.image = pygame.image.load("recursos/nave/NORMAL.png").convert_alpha()
-        self.image.set_colorkey(negro)
-        self.rect = self.image.get_rect()
-        self.rect.centery = 10
-        self.rect.bottom = 300
+        self.image.set_colorkey(negro) # quitar borde negro
+        self.rect = self.image.get_rect() # Saco la recta de la imagen para definir su posicion
+        self.rect.centerx = 25 # X
+        self.rect.centery = 300 # Y
         self.speed_x = 0
         self.vida = 100
     def update(self):
