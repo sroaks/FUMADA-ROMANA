@@ -14,20 +14,22 @@ for img in lista_de_meteoritos:
 """
 
 class Meteorito(pygame.sprite.Sprite):
-        def __init__(self):
-            super().__init__()
-            #self.image = random.choice(lista)
-            self.image = pygame.image.load("recursos/METEORITOS/CCC.png").convert_alpha()
-            self.rect = self.image.get_rect()
-            self.rect.x = random.randrange(ancho - self.rect.width)
-            self.rect.y = random.randrange(-100, -40)
-            self.speedy = random.randrange(1, 10)
-            self.speedx = random.randrange(-5, 5)
-
-        def update(self):
-            self.rect.x += self.speedx
-            self.rect.y += self.speedy
-            if self.rect.top > alto + 10 or self.rect.left < -25 or self.rect.right > ancho + 22 :
-                self.rect.x = random.randrange(ancho - self.rect.width)
-                self.rect.y = random.randrange(-100, -40)
-                self.speedy = random.randrange(1, 8)
+    def __init__(self):
+        super().__init__()
+        self.image = pygame.image.load("recursos/METEORITOS/I.png").convert_alpha()
+        self.image.set_colorkey(negro)
+        self.rect = self.image.get_rect() # Saco la recta de la imagen para definir su posicion
+        self.rect.centerx = 750 # X
+        self.rect.centery= random.randrange(25, 575) # Y
+        # A DETERMINAR LA VELOCIDAD
+        self.speedy = 0 #random.randrange(-5, 5)
+        self.speedx = random.randrange(5, 10)
+    
+    def update(self):
+            self.rect.centerx -= self.speedx
+            self.rect.centery += self.speedy
+            #en el caso de que se salga que aparezca de nuevo
+            if self.rect.centery < -50 or self.rect.centerx < -50 or self.rect.y > ancho + 50 : 
+                self.rect.centerx = 750 # X
+                self.rect.centery= random.randrange(25, 575)
+                self.speedx = random.randrange(5, 10)
