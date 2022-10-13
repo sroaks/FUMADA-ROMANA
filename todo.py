@@ -34,7 +34,7 @@ class Nave(pygame.sprite.Sprite): # Clase base simple para objetos de juego visi
         self.rect = self.image.get_rect() # Saco la recta de la imagen para definir su posicion
         self.rect.centerx = 25 # X
         self.rect.centery = 300 # Y
-        self.speed_x = 0
+        self.speed_x = 0 # este pobreto 100pre será 0... (F)
         self.speed_y = 0
         self.sumayup = 0
         self.sumaydw = 0
@@ -49,7 +49,7 @@ class Nave(pygame.sprite.Sprite): # Clase base simple para objetos de juego visi
         self.contadory = 0 # para darle la aceleración.
 
         #reponer la imagen estatica
-        if presiona != True or mantiene != True:
+        if presiona != True:
              self.image = pygame.image.load("recursos/nave/NORMAL.png").convert_alpha()   
         # dar movimiento UP
         if presiona[pygame.K_w]:
@@ -101,24 +101,14 @@ class Meteoritos(pygame.sprite.Sprite):
         self.speedx = random.randrange(5, 10)
         # meto aquí esto ya que si lo pongo en linea 56 me casca [es un parche, no me bajes nota Pigmonchu por fa plis]
         self.image = random.choice(meteoritos_imagenes)
-        self.angulo = random.randrange(0,359)
-        self.rotate = pygame.transform.rotate(self.image,self.angulo)
-        self.rotate_vel = random.randrange(1,20) 
-    
+        #metiendo rotachione a los meteoritos    
     def update(self):
         self.rect.centerx -= self.speedx
         self.rect.centery += self.speedy
-        self.angulo += self.rotate_vel
-
-        #en el caso de que se salga que aparezca de nuevo
         if self.rect.centery < -50 or self.rect.centerx < -50 or self.rect.centery > ancho + 50 : 
             self.rect.centerx = 750 # X
             self.rect.centery= random.randrange(25, 575)
             self.speedx = random.randrange(5, 10)
-            self.angulo = random.randrange(0,359)
-            self.rotate = pygame.transform.rotate(self.image,self.angulo)
-            self.rotate_vel = random.randrange(1,20)
-
 
 
 # ZONA DE DECLARAR IMAGENES
@@ -129,48 +119,63 @@ for img in lista_de_meteoritos:
     meteoritos_imagenes.append(pygame.image.load(img).convert_alpha())
 
 
-all_sprites = pygame.sprite.Group() # GRUPO PARA LA NAVE
-lista_de_meteoritos = pygame.sprite.Group()
-#lista_de_meteoritos = pygame.sprite.Group() # '' / METEORITOS
 
-nave = Nave() # crea la nave para meterla en all_sprites
-all_sprites.add(nave)
-
-#meteorito = Meteorito() # crea el meteorito para meterlo en all_sprites
-#all_sprites.add(meteorito)
-
-for n in range(5): # iteramos sobre un rango de 5 para crear varios meteoritos
-    meteoritos=Meteoritos()
-    all_sprites.add(meteoritos)
-    lista_de_meteoritos.add(meteoritos)
-
-
+# LA IMAGEN DE FONDO QUE CAMBIARÉ SEGÚN CLIMA
+fondo = pygame.image.load("recursos/fondo.png").convert()
+""" 
+fondo_lluvia = pygame.image.load("recursos/fondo.png").convert()
+fondo_nubes = pygame.image.load("recursos/fondo.png").convert()
+""" 
 # -----------------------------------------------
 
 GAME_OVER = True
 STAY_ALIVE = True
 while STAY_ALIVE:
+    
+    if GAME_OVER:
+        
+        GAME_OVER = False
+        all_sprites = pygame.sprite.Group()
+        lista_de_meteoritos = pygame.sprite.Group()
+        nave = Nave()
+        all_sprites.add(nave)
+        for n in range(5):
+            meteoritos=Meteoritos()
+            all_sprites.add(meteoritos)
+            lista_de_meteoritos.add(meteoritos)
+        
+        score = 0
+
     clock.tick(60)
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             STAY_ALIVE = False
-          
-    
-    #ventana.fill((blanco))
+        
+        elif event.type == pygame.KEYDOWN:
+            """
+            if event.key == pygame.K_SPACE:
+                player.shoot()
+            """
       
-    all_sprites.update() # meto all_sprites
+    all_sprites.update()
 
     """"
     #                                                              True ya que los objetos que choquen desaparecen
     golpes = pygame.sprite.spritecollide(nave, lista_de_meteoritos, True)
-    if golpes:
-        STAY_ALIVE = False
+    
     """ 
+    """ 
+    if tiempo == 'Clouds':
+        ventana.blit(fondo, [0, 0])
+        ventana.blit(fondo_nubes, [0, 0])
+    elif tiempo == 'Rain':
+        ventana.blit(fondo, [0, 0])
+        ventana.blit(fondo_lluvia, [0, 0])
+    else:
+    """ 
+    ventana.blit(fondo, [0, 0])
 
-    fondo = pygame.image.load("recursos/fondo.png").convert()
-    ventana.blit(fondo, [0, 0]) #dibujar muchas imágenes en otra
-
-    all_sprites.draw(ventana) # dibujo all_sprites
+    all_sprites.draw(ventana)
   
     #pygame.draw.rect(ventana, (negro),(ancho/2,alto/2, 50, 50)) probando las capas.
 
