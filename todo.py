@@ -4,12 +4,25 @@ ancho = 800
 alto = 600
 negro = (0, 0, 0)
 blanco = (255, 255, 255)
+verde = (173,255,47)
+amarillo = (255,255,0)
+naranja = (255,165,0)
+rojo = (255,0,0)
 
 pygame.init()
 ventana = pygame.display.set_mode((ancho, alto))
 pygame.display.set_caption("SPQR")
 clock = pygame.time.Clock()
 """
+"""
+"""
+TO DO LIST:
+- Mantener presionado
+- Rotar los meteoritos
+- PROYECTO BARRA DE VIDA, idea : 100 HP, según el meteorito te quita tanto. cuando vida 75% amarillo mitad naranja cuando -de la mitad rojo
+- PROYECTO API Clima
+- Base de datos de score.
+- Colisiones
 """
 # MI NAVE
 
@@ -22,31 +35,56 @@ class Nave(pygame.sprite.Sprite): # Clase base simple para objetos de juego visi
         self.rect.centerx = 25 # X
         self.rect.centery = 300 # Y
         self.speed_x = 0
+        self.speed_y = 0
+        self.sumayup = 0
+        self.sumaydw = 0
+        self.sumax = 0
         self.vida = 100
+
     def update(self):
         presiona = pygame.key.get_pressed()
-        mantiene = 0
-        self.speed_y = 0
+
+        self.speed_x = 0 # vel X siempre será 0
+        self.speed_y = 0 # velocidad Y
+        self.contadory = 0 # para darle la aceleración.
+
+        #reponer la imagen estatica
         if presiona != True or mantiene != True:
-             self.image = pygame.image.load("recursos/nave/NORMAL.png").convert_alpha()            
+             self.image = pygame.image.load("recursos/nave/NORMAL.png").convert_alpha()   
+        # dar movimiento UP
         if presiona[pygame.K_w]:
-            self.speed_y = -10
-            self.image = pygame.image.load("recursos/nave/subir.png").convert_alpha()
-        """
-        Quiero que cuando se mantenga pulsado acelere y cambia img
-        if mantiene[pygame.K_w]:
-            self.speed_y = -5
-            self.image = pygame.image.load("recursos/nave/subir fuerte.png").convert_alpha()
-            
-        """
+            self.sumaydw = self.sumaydw*0 # multiplicamos * 0 para resetear (cambio de tecla)
+            if self.sumayup <= 50: # este valor lo saqué fijandome en que valor se quedaba presionando 2 sec aprox.
+                self.speed_y = -2
+                self.contadory = 1 # contador
+                self.image = pygame.image.load("recursos/nave/subir.png").convert_alpha() 
+            if self.sumayup > 50: 
+                self.speed_y = -5
+                self.image = pygame.image.load("recursos/nave/subir fuerte.png").convert_alpha() #por fin doy uso a mi tan preciada imagen.
+
+        # dar movimiento DOWN   
         if presiona[pygame.K_s]:
-            self.speed_y = 10
-            self.image = pygame.image.load("recursos/nave/bajar.png").convert_alpha()
+            self.sumayup = self.sumayup*0
+            if self.sumaydw <= 50:  
+                self.speed_y = 2
+                self.contadory = 1
+                self.image = pygame.image.load("recursos/nave/bajar.png").convert_alpha()
+            if self.sumaydw > 50:
+                self.speed_y = 5
+                self.image = pygame.image.load("recursos/nave/bajar fuerte.png").convert_alpha()
+
+        self.sumayup += self.contadory
+        #print(self.sumayup)
+        self.sumaydw += self.contadory
+        #print(self.sumaydw)
+
         self.rect.y += self.speed_y
+
         if self.rect.bottom > alto:
             self.rect.bottom = alto
         if self.rect.bottom < 50:
             self.rect.bottom = 50
+
 
 # METEORITOS
 
@@ -82,6 +120,7 @@ class Meteoritos(pygame.sprite.Sprite):
             self.rotate_vel = random.randrange(1,20)
 
 
+
 # ZONA DE DECLARAR IMAGENES
 
 meteoritos_imagenes=[]
@@ -105,6 +144,7 @@ for n in range(5): # iteramos sobre un rango de 5 para crear varios meteoritos
     all_sprites.add(meteoritos)
     lista_de_meteoritos.add(meteoritos)
 
+
 # -----------------------------------------------
 
 GAME_OVER = True
@@ -114,10 +154,18 @@ while STAY_ALIVE:
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             STAY_ALIVE = False
+          
     
     #ventana.fill((blanco))
       
     all_sprites.update() # meto all_sprites
+
+    """"
+    #                                                              True ya que los objetos que choquen desaparecen
+    golpes = pygame.sprite.spritecollide(nave, lista_de_meteoritos, True)
+    if golpes:
+        STAY_ALIVE = False
+    """ 
 
     fondo = pygame.image.load("recursos/fondo.png").convert()
     ventana.blit(fondo, [0, 0]) #dibujar muchas imágenes en otra
