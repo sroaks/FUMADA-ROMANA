@@ -91,24 +91,27 @@ class Nave(pygame.sprite.Sprite): # Clase base simple para objetos de juego visi
 class Meteoritos(pygame.sprite.Sprite):
     def __init__(self):
         super().__init__()
+        self.angulo = random.randrange(0,359)
+        self.rotate_speed = random.randrange(-1,1)
         self.image = pygame.image.load("recursos/METEORITOS/CCC.png").convert_alpha()
         self.rect = self.image.get_rect()
         self.image.set_colorkey(negro)
         self.rect.centerx = 750 # X
         self.rect.centery= random.randrange(25, 575) # Y
         # A DETERMINAR LA VELOCIDAD
-        self.speedy = 0 #random.randrange(-5, 5)
-        self.speedx = random.randrange(5, 10)
-        # meto aquí esto ya que si lo pongo en linea 56 me casca [es un parche, no me bajes nota Pigmonchu por fa plis]
-        self.image = random.choice(meteoritos_imagenes)
-        #metiendo rotachione a los meteoritos    
+        self.speedy = random.randrange(-1,1)
+        self.speedx = random.randrange(-5,-1)
+           
     def update(self):
-        self.rect.centerx -= self.speedx
+        self.rect.centerx += self.speedx
         self.rect.centery += self.speedy
+        #metiendo rotachione a los meteoritos
+        self.angulo += self.rotate_speed #POR FIIIIIIIIIIIIIIIIIIIIIN !!!!!
+        self.image = pygame.transform.rotate(random.choice(meteoritos_imagenes),self.angulo).convert_alpha()
         if self.rect.centery < -50 or self.rect.centerx < -50 or self.rect.centery > ancho + 50 : 
             self.rect.centerx = 750 # X
             self.rect.centery= random.randrange(25, 575)
-            self.speedx = random.randrange(5, 10)
+            self.speedx = random.randrange(-10, -5)
 
 
 # ZONA DE DECLARAR IMAGENES
@@ -118,31 +121,67 @@ lista_de_meteoritos=["recursos/METEORITOS/CCC.png","recursos/METEORITOS/I.png","
 for img in lista_de_meteoritos:
     meteoritos_imagenes.append(pygame.image.load(img).convert_alpha())
 
-
-
-# LA IMAGEN DE FONDO QUE CAMBIARÉ SEGÚN CLIMA
 fondo = pygame.image.load("recursos/fondo.png").convert()
-""" 
-fondo_lluvia = pygame.image.load("recursos/fondo.png").convert()
-fondo_nubes = pygame.image.load("recursos/fondo.png").convert()
-""" 
-# -----------------------------------------------
+
+
+# ---------- metiendo clima -----------------------
+
+POSI_C = (700,35)
+# import de la API : clima
+clima = 'Clear'
+img_clima = pygame.image.load("recursos/efectos_clima/nube01.png").convert_alpha()
+
+imgl=[]
+
+if clima == 'Clouds':
+    imgl_row= ['recursos/efectos_clima/nube01.png','recursos/efectos_clima/nube02.png','recursos/efectos_clima/nube03.png']
+if clima == 'Clear':
+    imgl_row= ['recursos/efectos_clima/nube01.png','recursos/efectos_clima/nube02.png','recursos/efectos_clima/nube03.png']
+if clima == 'Rain':
+    imgl_row= ['recursos/efectos_clima/nube01.png','recursos/efectos_clima/nube02.png','recursos/efectos_clima/nube03.png']
+
+for img in imgl_row:
+    imgl.append(pygame.image.load(img).convert_alpha())
+    
+# -----------------------------------------------------
+
+
+all_sprites = pygame.sprite.Group()
+
+lista_de_meteoritos = pygame.sprite.Group()
+
+nave = Nave()
+
+all_sprites.add(nave)
+
+for n in range(3):
+    meteoritos=Meteoritos()
+    all_sprites.add(meteoritos)
+    lista_de_meteoritos.add(meteoritos)
+
+
 
 GAME_OVER = True
 STAY_ALIVE = True
+
+aux = 1 # variable para tiempo numero entero
 while STAY_ALIVE:
+    t = pygame.time.get_ticks()//1000
+    G = 0
+    if aux == t:
+        aux += 1
+        x = list(divmod(t,3))
+        if x[1] == 1:
+            img_clima= imgl[0]
+        if x[1] == 2:
+            img_clima= imgl[1]
+        if x[1] == 0:
+            img_clima= imgl[2]
+
     
     if GAME_OVER:
         
         GAME_OVER = False
-        all_sprites = pygame.sprite.Group()
-        lista_de_meteoritos = pygame.sprite.Group()
-        nave = Nave()
-        all_sprites.add(nave)
-        for n in range(5):
-            meteoritos=Meteoritos()
-            all_sprites.add(meteoritos)
-            lista_de_meteoritos.add(meteoritos)
         
         score = 0
 
@@ -151,31 +190,14 @@ while STAY_ALIVE:
         if event.type == pygame.QUIT:
             STAY_ALIVE = False
         
-        elif event.type == pygame.KEYDOWN:
-            """
-            if event.key == pygame.K_SPACE:
-                player.shoot()
-            """
       
     all_sprites.update()
 
-    """"
-    #                                                              True ya que los objetos que choquen desaparecen
-    golpes = pygame.sprite.spritecollide(nave, lista_de_meteoritos, True)
-    
-    """ 
-    """ 
-    if tiempo == 'Clouds':
-        ventana.blit(fondo, [0, 0])
-        ventana.blit(fondo_nubes, [0, 0])
-    elif tiempo == 'Rain':
-        ventana.blit(fondo, [0, 0])
-        ventana.blit(fondo_lluvia, [0, 0])
-    else:
-    """ 
+
     ventana.blit(fondo, [0, 0])
 
     all_sprites.draw(ventana)
+    ventana.blit(img_clima,POSI_C)
   
     #pygame.draw.rect(ventana, (negro),(ancho/2,alto/2, 50, 50)) probando las capas.
 

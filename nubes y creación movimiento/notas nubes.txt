@@ -1,0 +1,42 @@
+# ---------- metiendo clima -----------------------
+
+POSI_C = (700,35)
+# import de la API : clima
+clima = 'Clear'
+img_clima = pygame.image.load('img/nube01.png').convert_alpha()
+
+imgl=[]
+
+if clima == 'Clouds':
+    imgl_row= ['img/nube01.png','img/nube02.png','img/nube03.png']
+if clima == 'Clear':
+    imgl_row= ['img/nube01.png','img/nube02.png','img/nube03.png']
+if clima == 'Rain':
+    imgl_row= ['img/nube01.png','img/nube02.png','img/nube03.png']
+
+for img in imgl_row:
+    imgl.append(pygame.image.load(img).convert_alpha())
+    
+# -----------------------------------------------------
+
+aux = 1
+while running:
+    #screen.fill(WHITE)
+    t = pygame.time.get_ticks()//1000
+    G = 0
+    if aux == t:
+        aux += 1
+        x = list(divmod(t,3))
+        if x[1] == 1:
+            img_clima= imgl[0]
+        if x[1] == 2:
+            img_clima= imgl[1]
+        if x[1] == 0:
+            img_clima= imgl[2]
+
+
+antes del pygame.display.flip()
+
+    screen.blit(background, [0, 0])
+    
+    screen.blit(img_clima,POSI_C)
