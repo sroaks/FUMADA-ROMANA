@@ -10,9 +10,10 @@ verde = (173,255,47)
 amarillo = (255,255,0)
 naranja = (255,165,0)
 rojo = (255,0,0)
+interface_p = (800,90)
 
 pygame.init()
-ventana = pygame.display.set_mode((ancho, alto))
+ventana = pygame.display.set_mode((ancho, 690))
 pygame.display.set_caption("SPQR")
 clock = pygame.time.Clock()
 
@@ -32,9 +33,15 @@ def draw_text(text,font,color,ventana,x,y):
 TO DO LIST:
 - Rotar los meteoritos (hecho, pero hay que ajustarlo)
 - PROYECTO BARRA DE VIDA, idea : 100 HP, según el meteorito te quita tanto. cuando vida 75% amarillo mitad naranja cuando -de la mitad rojo
--
-- Base de datos de score.
-- Colisiones
+- Base de datos de score
+- Editar los textos cada uno con una fuente color tamaño etc...
+- MENU
+- METER TIMING (QUE EMPIECE DETERMINADOS SEGUNDOS, PARE, SUME METEORITOS, DIFERENTES ENEMIGOS...)
+- diferenciar los sprites para poder darles el timing... meteoritos por un lado otros enemigos por otro etc, asi controlas más
+- DEFINIR WIN
+- LVL 2
+- BASE DE DATOS en este enlace: https://www.youtube.com/watch?v=4FDVzF0Z9Yo&list=WL&index=5&ab_channel=UskoKruM2010
+
 """
 # MI NAVE
 
@@ -85,10 +92,7 @@ class Nave(pygame.sprite.Sprite): # Clase base simple para objetos de juego visi
                 self.image = pygame.image.load("recursos/nave/bajar fuerte.png").convert_alpha()
 
         self.sumayup += self.contadory
-        #print(self.sumayup)
         self.sumaydw += self.contadory
-        #print(self.sumaydw)
-
         self.rect.y += self.speed_y
         #posicion inicial nave
         if self.rect.bottom > alto:
@@ -130,6 +134,7 @@ class Meteoritos(pygame.sprite.Sprite):
             self.rect.centerx = 750 # X
             self.rect.centery= random.randrange(25, 575)
             self.speedx = random.randrange(-10, -5)
+            self.speedy = random.randrange(-1,1)
 
 
 class Bullet(pygame.sprite.Sprite):
@@ -182,6 +187,13 @@ if clima == 'Rain':
 for img in imgl_row:
     imgl.append(pygame.image.load(img).convert_alpha())
 
+#-- SCORE EN NUMERO ROMANO 
+
+nr=[
+    (1000,'M'), (500, 'D'),
+    (100,'C'), (50,'L'),
+    (10,'X'), (5,'V'),(1,'I')
+    ]
 
     
 # -----------------------------------------------------
@@ -227,7 +239,7 @@ while STAY_ALIVE:
         GAME_OVER = False
         
         score = 0
-        
+
 
     clock.tick(60)
     for event in pygame.event.get():
@@ -253,6 +265,54 @@ while STAY_ALIVE:
         STAY_ALIVE = False
 
 
+    # SCORE N_ROMAN
+
+    N=score
+    N="{:0>4d}".format(N)
+    Nlista=list(N)
+
+    millares=int(Nlista[0])
+    centenas=int(Nlista[1])
+    decenas=int(Nlista[2])
+    unidades=int(Nlista[3])
+    nu=""
+    nd=""
+    nc=""
+    nm=""
+    #unidades
+    if unidades<9 and unidades>=5:
+        nu=(nr[5][1]+(unidades-5)*nr[6][1])
+    elif unidades<4:
+        nu=(unidades*nr[6][1])
+    elif unidades==4:
+        nu='IV'
+    elif unidades==9:
+        nu='IX'
+    #decenas
+    if decenas<9 and decenas>=5:
+        nd=(nr[3][1]+((decenas-5)*nr[4][1]))
+    elif decenas>=1 and decenas<4:
+        nd=(nr[4][1])*decenas
+    elif decenas==4:
+        nd='XL'
+    elif decenas==9:
+        nd='XC'   
+    #centenas
+    if centenas<9 and centenas>=5:
+        nc=(nr[1][1]+(centenas-5)*nr[2][1])
+    elif centenas>=1 and centenas<4:
+        nc=(nr[2][1])*centenas
+    elif centenas==4:
+        nc='CD'
+    elif centenas==9:
+        nc='CM'
+    #millares
+    if millares>=1 and millares<4:
+        nm=(nr[0][1])*millares
+    else:
+        N=(nm+nc+nd+nu)
+
+
     ventana.blit(fondo, [0, 0])
 
     all_sprites.draw(ventana)
@@ -261,7 +321,7 @@ while STAY_ALIVE:
     ventana.blit(img_grados_v, POSI_GRADOS)
     ventana.blit(pygame.transform.rotate(img_brujula_v,grados_viento),POSI_BRUJ)
 
-    draw_text(str(score), font, (negro), ventana, 400, 20)
+    draw_text(str(N), font, (negro), ventana, 400, 20)
     draw_text(str(t),font,(negro), ventana, 20, 20)
     draw_text('Vel-viento m/s:',font,(rojo),ventana,450,10)
     draw_text(str(velocidad_viento),font,(rojo),ventana,545,10)
