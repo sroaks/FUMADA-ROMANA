@@ -152,6 +152,32 @@ class Bullet(pygame.sprite.Sprite):
 		if self.rect.x > 800:
 			self.kill() #esto hace desaparecer el balazo del tiron
 
+class Explosion(pygame.sprite.Sprite):
+	def __init__(self, center):
+		super().__init__()
+		self.image = explosion_anim[0]
+		self.rect = self.image.get_rect()
+		self.rect.center = center
+		self.frame = 0
+		self.last_update = pygame.time.get_ticks()
+		self.frame_rate = 50 # velocidad explosion
+
+	def update(self):
+		now = pygame.time.get_ticks()
+		if now - self.last_update > self.frame_rate:
+			self.last_update = now
+			self.frame += 1
+			if self.frame == len(explosion_anim):
+				self.kill() 
+			else:
+				center = self.rect.center
+				self.image = explosion_anim[self.frame]
+				self.rect = self.image.get_rect()
+				self.rect.center = center
+
+
+
+
 
 # ZONA DE DECLARAR IMAGENES
 
@@ -161,6 +187,14 @@ for img in lista_de_meteoritos:
     meteoritos_imagenes.append(pygame.image.load(img).convert_alpha())
 
 fondo = pygame.image.load("recursos/fondo.png").convert()
+
+explosion_anim = []
+for i in range(7):
+	file = "recursos/explosion/EXP0{}.png".format(i)
+	img = pygame.image.load(file).convert_alpha()
+	img.set_colorkey(negro)
+	img_scale = pygame.transform.scale(img, (70, 70))
+	explosion_anim.append(img_scale)
 
 
 # ---------- metiendo clima -----------------------
@@ -255,6 +289,8 @@ while STAY_ALIVE:
     hits = pygame.sprite.groupcollide(lista_de_meteoritos, bullets, True, True)
     for hit in hits:
         score += 1
+        explosion = Explosion(hit.rect.center)
+        all_sprites.add(explosion)
         meteor = Meteoritos()
         all_sprites.add(meteor)
         lista_de_meteoritos.add(meteor)
