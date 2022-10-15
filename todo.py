@@ -90,11 +90,16 @@ class Nave(pygame.sprite.Sprite): # Clase base simple para objetos de juego visi
         #print(self.sumaydw)
 
         self.rect.y += self.speed_y
-
+        #posicion inicial nave
         if self.rect.bottom > alto:
             self.rect.bottom = alto
         if self.rect.bottom < 50:
             self.rect.bottom = 50
+
+    def shoot(self):
+        bullet = Bullet(self.rect.centerx, self.rect.top)
+        all_sprites.add(bullet)
+        bullets.add(bullet)
 
 
 # METEORITOS
@@ -125,6 +130,22 @@ class Meteoritos(pygame.sprite.Sprite):
             self.rect.centerx = 750 # X
             self.rect.centery= random.randrange(25, 575)
             self.speedx = random.randrange(-10, -5)
+
+
+class Bullet(pygame.sprite.Sprite):
+	def __init__(self, x, y):
+		super().__init__()
+		self.image = pygame.image.load("recursos/nave/balazo_lokete.png")
+		self.image.set_colorkey(negro)
+		self.rect = self.image.get_rect()
+		self.rect.y = y
+		self.rect.centerx = x
+		self.speedx = 10
+
+	def update(self):
+		self.rect.x += self.speedx
+		if self.rect.x > 800:
+			self.kill() #esto hace desaparecer el balazo del tiron
 
 
 # ZONA DE DECLARAR IMAGENES
@@ -167,7 +188,7 @@ for img in imgl_row:
 
 
 all_sprites = pygame.sprite.Group()
-
+bullets = pygame.sprite.Group()
 lista_de_meteoritos = pygame.sprite.Group()
 
 nave = Nave()
@@ -211,9 +232,23 @@ while STAY_ALIVE:
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             STAY_ALIVE = False
+        elif event.type == pygame.KEYDOWN:
+            if event.key == pygame.K_SPACE:
+                nave.shoot()
         
       
     all_sprites.update()
+    # Colisiones disparos
+    hits = pygame.sprite.groupcollide(lista_de_meteoritos, bullets, True, True)
+    for hit in hits:
+        meteor = Meteoritos()
+        all_sprites.add(meteor)
+        lista_de_meteoritos.add(meteor)
+		
+	# Colisiones jugador - meteoro
+    hits = pygame.sprite.spritecollide(nave, lista_de_meteoritos, False)
+    if hits:
+        running = False
 
 
     ventana.blit(fondo, [0, 0])
