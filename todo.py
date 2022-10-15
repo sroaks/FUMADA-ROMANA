@@ -1,4 +1,6 @@
-import pygame, random
+import pygame, random, sys
+
+from tiempop import *
 
 ancho = 800
 alto = 600
@@ -13,14 +15,24 @@ pygame.init()
 ventana = pygame.display.set_mode((ancho, alto))
 pygame.display.set_caption("SPQR")
 clock = pygame.time.Clock()
+
+font = pygame.font.SysFont('Arial', 20)
+
+def draw_text(text,font,color,ventana,x,y):
+    textobj = font.render(text,1,color)
+    textrect = textobj.get_rect()
+    textrect.topleft = (x,y)
+    ventana.blit(textobj,textrect)
+
+
+
 """
 """
 """
 TO DO LIST:
-- Mantener presionado
-- Rotar los meteoritos
+- Rotar los meteoritos (hecho, pero hay que ajustarlo)
 - PROYECTO BARRA DE VIDA, idea : 100 HP, según el meteorito te quita tanto. cuando vida 75% amarillo mitad naranja cuando -de la mitad rojo
-- PROYECTO API Clima
+-
 - Base de datos de score.
 - Colisiones
 """
@@ -43,7 +55,6 @@ class Nave(pygame.sprite.Sprite): # Clase base simple para objetos de juego visi
 
     def update(self):
         presiona = pygame.key.get_pressed()
-
         self.speed_x = 0 # vel X siempre será 0
         self.speed_y = 0 # velocidad Y
         self.contadory = 0 # para darle la aceleración.
@@ -54,22 +65,22 @@ class Nave(pygame.sprite.Sprite): # Clase base simple para objetos de juego visi
         # dar movimiento UP
         if presiona[pygame.K_w]:
             self.sumaydw = self.sumaydw*0 # multiplicamos * 0 para resetear (cambio de tecla)
-            if self.sumayup <= 50: # este valor lo saqué fijandome en que valor se quedaba presionando 2 sec aprox.
+            if self.sumayup <= 40: # este valor lo saqué fijandome en que valor se quedaba presionando 2 sec aprox.
                 self.speed_y = -2
                 self.contadory = 1 # contador
                 self.image = pygame.image.load("recursos/nave/subir.png").convert_alpha() 
-            if self.sumayup > 50: 
+            if self.sumayup > 40: 
                 self.speed_y = -5
                 self.image = pygame.image.load("recursos/nave/subir fuerte.png").convert_alpha() #por fin doy uso a mi tan preciada imagen.
 
         # dar movimiento DOWN   
         if presiona[pygame.K_s]:
             self.sumayup = self.sumayup*0
-            if self.sumaydw <= 50:  
+            if self.sumaydw <= 40:  
                 self.speed_y = 2
                 self.contadory = 1
                 self.image = pygame.image.load("recursos/nave/bajar.png").convert_alpha()
-            if self.sumaydw > 50:
+            if self.sumaydw > 40:
                 self.speed_y = 5
                 self.image = pygame.image.load("recursos/nave/bajar fuerte.png").convert_alpha()
 
@@ -101,13 +112,15 @@ class Meteoritos(pygame.sprite.Sprite):
         # A DETERMINAR LA VELOCIDAD
         self.speedy = random.randrange(-1,1)
         self.speedx = random.randrange(-5,-1)
+        # seleccionar meteorito aleatorio
+        self.image = random.choice(meteoritos_imagenes)
            
     def update(self):
         self.rect.centerx += self.speedx
         self.rect.centery += self.speedy
         #metiendo rotachione a los meteoritos
         self.angulo += self.rotate_speed #POR FIIIIIIIIIIIIIIIIIIIIIN !!!!!
-        self.image = pygame.transform.rotate(random.choice(meteoritos_imagenes),self.angulo).convert_alpha()
+        #self.image = pygame.transform.rotate(random.choice(meteoritos_imagenes),self.angulo).convert_alpha()
         if self.rect.centery < -50 or self.rect.centerx < -50 or self.rect.centery > ancho + 50 : 
             self.rect.centerx = 750 # X
             self.rect.centery= random.randrange(25, 575)
@@ -128,20 +141,24 @@ fondo = pygame.image.load("recursos/fondo.png").convert()
 
 POSI_C = (700,35)
 # import de la API : clima
-clima = 'Clear'
+clima = tiempo
+grados_v = grados_viento
+vel_v = velocidad_viento
+
 img_clima = pygame.image.load("recursos/efectos_clima/nube01.png").convert_alpha()
 
 imgl=[]
-
 if clima == 'Clouds':
     imgl_row= ['recursos/efectos_clima/nube01.png','recursos/efectos_clima/nube02.png','recursos/efectos_clima/nube03.png']
 if clima == 'Clear':
-    imgl_row= ['recursos/efectos_clima/nube01.png','recursos/efectos_clima/nube02.png','recursos/efectos_clima/nube03.png']
+    imgl_row= ['recursos/efectos_clima/sol_1.png','recursos/efectos_clima/sol_2.png','recursos/efectos_clima/sol_3.png']
 if clima == 'Rain':
     imgl_row= ['recursos/efectos_clima/nube01.png','recursos/efectos_clima/nube02.png','recursos/efectos_clima/nube03.png']
 
 for img in imgl_row:
     imgl.append(pygame.image.load(img).convert_alpha())
+
+
     
 # -----------------------------------------------------
 
@@ -197,7 +214,10 @@ while STAY_ALIVE:
     ventana.blit(fondo, [0, 0])
 
     all_sprites.draw(ventana)
+
     ventana.blit(img_clima,POSI_C)
+
+    draw_text(str(t),font,(0,0,0),ventana, 20, 20)
   
     #pygame.draw.rect(ventana, (negro),(ancho/2,alto/2, 50, 50)) probando las capas.
 

@@ -1,130 +1,91 @@
-import pygame, random
-from tiempop import *
-
-ancho = 800
-alto = 600
-negro = (0, 0, 0)
-blanco = (255, 255, 255)
-verde = (173,255,47)
-amarillo = (255,255,0)
-naranja = (255,165,0)
-rojo = (255,0,0)
-
+#!/usr/bin/python3.4
+# Setup Python ----------------------------------------------- #
+import pygame, sys
+ 
+# Setup pygame/window ---------------------------------------- #
+mainClock = pygame.time.Clock()
+from pygame.locals import *
 pygame.init()
-ventana = pygame.display.set_mode((ancho, alto))
-pygame.display.set_caption("SPQR")
-clock = pygame.time.Clock()
-"""
-"""
-"""
-TO DO LIST:
-- Mantener presionado
-- Rotar los meteoritos
-- PROYECTO BARRA DE VIDA, idea : 100 HP, según el meteorito te quita tanto. cuando vida 75% amarillo mitad naranja cuando -de la mitad rojo
-- PROYECTO API Clima
-- Base de datos de score.
-- Colisiones
-"""
-
-print(tiempo)
-print(v_viento)
-
-class Clima(pygame.sprite.Sprite):
-    def __init__(self):
-        super().__init__()
-        self.image = pygame.image.load("recursos/efectos_clima/sol_1.png").convert_alpha()
-        self.rect = self.image.get_rect()
-        self.rect.centerx = 400
-        self.rect.centery= 300
-
-# METEORITOS
-
-class Meteoritos(pygame.sprite.Sprite):
-    def __init__(self):
-        super().__init__()
-        self.image = pygame.image.load("recursos/METEORITOS/CCC.png").convert_alpha()
-        self.rect = self.image.get_rect()
-        self.image.set_colorkey(negro)
-        self.rect.centerx = 750 # X
-        self.rect.centery= random.randrange(25, 575) # Y
-        # A DETERMINAR LA VELOCIDAD
-        self.speedy = 0 #random.randrange(-5, 5)
-        self.speedx = random.randrange(5, 10)
-        # meto aquí esto ya que si lo pongo en linea 56 me casca [es un parche, no me bajes nota Pigmonchu por fa plis]
-        self.image = random.choice(meteoritos_imagenes)
-
-        #metiendo rotachione a los meteoritos  
-        self.spin = random.randrange(0,359)
-
-    def update(self):
-        self.rect.centerx -= self.speedx
-        self.rect.centery += self.speedy
-        if self.rect.centery < -50 or self.rect.centerx < -50 or self.rect.centery > ancho + 50 : 
-            self.rect.centerx = 750 # X
-            self.rect.centery= random.randrange(25, 575)
-            self.speedx = random.randrange(5, 10)
-
-
-# ZONA DE DECLARAR IMAGENES
-
-meteoritos_imagenes=[]
-lista_de_meteoritos=["recursos/METEORITOS/CCC.png","recursos/METEORITOS/I.png","recursos/METEORITOS/IV.png","recursos/METEORITOS/L.png","recursos/METEORITOS/MIX.png","recursos/METEORITOS/XDV.png"]
-for img in lista_de_meteoritos:
-    meteoritos_imagenes.append(pygame.image.load(img).convert_alpha())
-
-
-
-# LA IMAGEN DE FONDO QUE CAMBIARÉ SEGÚN CLIMA
-fondo = pygame.image.load("recursos/fondo.png").convert_alpha()
-
-# -----------------------------------------------
-
-
-    
-
-GAME_OVER = True
-STAY_ALIVE = True
-while STAY_ALIVE:
-
-    
-    if GAME_OVER:
+pygame.display.set_caption('game base')
+screen = pygame.display.set_mode((500, 500),0,32)
+ 
+font = pygame.font.SysFont(None, 20)
+ 
+def draw_text(text, font, color, surface, x, y):
+    textobj = font.render(text, 1, color)
+    textrect = textobj.get_rect()
+    textrect.topleft = (x, y)
+    surface.blit(textobj, textrect)
+ 
+click = False
+ 
+def main_menu():
+    while True:
+ 
+        screen.fill((0,0,0))
+        draw_text('main menu', font, (255, 255, 255), screen, 20, 20)
+ 
+        mx, my = pygame.mouse.get_pos()
+ 
+        button_1 = pygame.Rect(50, 100, 200, 50)
+        button_2 = pygame.Rect(50, 200, 200, 50)
+        if button_1.collidepoint((mx, my)):
+            if click:
+                game()
+        if button_2.collidepoint((mx, my)):
+            if click:
+                options()
+        pygame.draw.rect(screen, (255, 0, 0), button_1)
+        pygame.draw.rect(screen, (255, 0, 0), button_2)
+ 
+        click = False
+        for event in pygame.event.get():
+            if event.type == QUIT:
+                pygame.quit()
+                sys.exit()
+            if event.type == KEYDOWN:
+                if event.key == K_ESCAPE:
+                    pygame.quit()
+                    sys.exit()
+            if event.type == MOUSEBUTTONDOWN:
+                if event.button == 1:
+                    click = True
+ 
+        pygame.display.update()
+        mainClock.tick(60)
+ 
+def game():
+    running = True
+    while running:
+        screen.fill((0,0,0))
         
-        GAME_OVER = False
-        all_sprites = pygame.sprite.Group()
-        lista_de_meteoritos = pygame.sprite.Group()
-
-        for n in range(5):
-            meteoritos=Meteoritos()
-            clima=Clima()
-            all_sprites.add(meteoritos)
-            lista_de_meteoritos.add(meteoritos)
-            all_sprites.add(clima)
+        draw_text('game', font, (255, 255, 255), screen, 20, 20)
+        for event in pygame.event.get():
+            if event.type == QUIT:
+                pygame.quit()
+                sys.exit()
+            if event.type == KEYDOWN:
+                if event.key == K_ESCAPE:
+                    running = False
         
-        score = 0
-
-    clock.tick(60)
-    for event in pygame.event.get():
-        if event.type == pygame.QUIT:
-            STAY_ALIVE = False
+        pygame.display.update()
+        mainClock.tick(60)
+ 
+def options():
+    running = True
+    while running:
+        screen.fill((0,0,0))
+ 
+        draw_text('options', font, (255, 255, 255), screen, 20, 20)
+        for event in pygame.event.get():
+            if event.type == QUIT:
+                pygame.quit()
+                sys.exit()
+            if event.type == KEYDOWN:
+                if event.key == K_ESCAPE:
+                    running = False
         
-        elif event.type == pygame.KEYDOWN:
-            """
-            if event.key == pygame.K_SPACE:
-                player.shoot()
-            """
-      
-    all_sprites.update()
-
-    """"
-    #                                                              True ya que los objetos que choquen desaparecen
-    golpes = pygame.sprite.spritecollide(nave, lista_de_meteoritos, True)
-    
-    """ 
-    ventana.fill(blanco)
-
-    all_sprites.draw(ventana)
-
-
-
-    pygame.display.flip()
-pygame.quit()
+        pygame.display.update()
+        mainClock.tick(60)
+ 
+main_menu()
