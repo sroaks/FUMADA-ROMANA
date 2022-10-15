@@ -227,6 +227,7 @@ while STAY_ALIVE:
         GAME_OVER = False
         
         score = 0
+        
 
     clock.tick(60)
     for event in pygame.event.get():
@@ -241,14 +242,15 @@ while STAY_ALIVE:
     # Colisiones disparos
     hits = pygame.sprite.groupcollide(lista_de_meteoritos, bullets, True, True)
     for hit in hits:
+        score += 1
         meteor = Meteoritos()
         all_sprites.add(meteor)
         lista_de_meteoritos.add(meteor)
 		
 	# Colisiones jugador - meteoro
-    hits = pygame.sprite.spritecollide(nave, lista_de_meteoritos, False)
+    hits = pygame.sprite.spritecollide(nave, lista_de_meteoritos, True)
     if hits:
-        running = False
+        STAY_ALIVE = False
 
 
     ventana.blit(fondo, [0, 0])
@@ -259,7 +261,8 @@ while STAY_ALIVE:
     ventana.blit(img_grados_v, POSI_GRADOS)
     ventana.blit(pygame.transform.rotate(img_brujula_v,grados_viento),POSI_BRUJ)
 
-    draw_text(str(t),font,(0,0,0),ventana, 20, 20)
+    draw_text(str(score), font, (negro), ventana, 400, 20)
+    draw_text(str(t),font,(negro), ventana, 20, 20)
     draw_text('Vel-viento m/s:',font,(rojo),ventana,450,10)
     draw_text(str(velocidad_viento),font,(rojo),ventana,545,10)
   
