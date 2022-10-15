@@ -16,7 +16,7 @@ ventana = pygame.display.set_mode((ancho, alto))
 pygame.display.set_caption("SPQR")
 clock = pygame.time.Clock()
 
-font = pygame.font.SysFont('Arial', 20)
+font = pygame.font.SysFont('Arial', 15)
 
 def draw_text(text,font,color,ventana,x,y):
     textobj = font.render(text,1,color)
@@ -139,13 +139,16 @@ fondo = pygame.image.load("recursos/fondo.png").convert()
 
 # ---------- metiendo clima -----------------------
 
-POSI_C = (700,35)
+POSI_C = (700,15)
+POSI_BRUJ = (623, 37)
+POSI_GRADOS = (600,15)
 # import de la API : clima
 clima = tiempo
-grados_v = grados_viento
-vel_v = velocidad_viento
+
 
 img_clima = pygame.image.load("recursos/efectos_clima/nube01.png").convert_alpha()
+img_brujula_v = pygame.image.load("recursos/efectos_clima/brújula.png").convert_alpha()
+img_grados_v = pygame.image.load("recursos/efectos_clima/grados_brjula.png").convert_alpha()
 
 imgl=[]
 if clima == 'Clouds':
@@ -194,6 +197,8 @@ while STAY_ALIVE:
             img_clima= imgl[1]
         if x[1] == 0:
             img_clima= imgl[2]
+    
+    # ROTACIÓN BRUJULA SEGUN GRADOS API
 
     
     if GAME_OVER:
@@ -216,8 +221,12 @@ while STAY_ALIVE:
     all_sprites.draw(ventana)
 
     ventana.blit(img_clima,POSI_C)
+    ventana.blit(img_grados_v, POSI_GRADOS)
+    ventana.blit(pygame.transform.rotate(img_brujula_v,grados_viento),POSI_BRUJ)
 
     draw_text(str(t),font,(0,0,0),ventana, 20, 20)
+    draw_text('Vel-viento m/s:',font,(rojo),ventana,450,10)
+    draw_text(str(velocidad_viento),font,(rojo),ventana,545,10)
   
     #pygame.draw.rect(ventana, (negro),(ancho/2,alto/2, 50, 50)) probando las capas.
 
