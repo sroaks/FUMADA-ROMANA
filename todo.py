@@ -18,6 +18,7 @@ pygame.display.set_caption("SPQR")
 clock = pygame.time.Clock()
 
 font = pygame.font.SysFont('Arial', 15)
+fotn_2 = pygame.font.SysFont('Arial', 25)
 
 def draw_text(text,font,color,ventana,x,y):
     textobj = font.render(text,1,color)
@@ -210,16 +211,13 @@ img_clima = pygame.image.load("recursos/efectos_clima/nube01.png").convert_alpha
 img_brujula_v = pygame.image.load("recursos/efectos_clima/brújula.png").convert_alpha()
 img_grados_v = pygame.image.load("recursos/efectos_clima/grados_brjula.png").convert_alpha()
 
-imgl=[]
-if clima == 'Clouds':
-    imgl_row= ['recursos/efectos_clima/nube01.png','recursos/efectos_clima/nube02.png','recursos/efectos_clima/nube03.png']
-if clima == 'Clear':
-    imgl_row= ['recursos/efectos_clima/sol_1.png','recursos/efectos_clima/sol_2.png','recursos/efectos_clima/sol_3.png']
-if clima == 'Rain':
-    imgl_row= ['recursos/efectos_clima/nube01.png','recursos/efectos_clima/nube02.png','recursos/efectos_clima/nube03.png']
-
-for img in imgl_row:
-    imgl.append(pygame.image.load(img).convert_alpha())
+imgl = []
+for w in range(3):
+	file = 'recursos/efectos_clima/nube0{}.png'.format(w)
+	img = pygame.image.load(file).convert_alpha()
+	img.set_colorkey(negro)
+	#img_scale = pygame.transform.scale(img, (70, 70))
+	imgl.append(img)
 
 #-- SCORE EN NUMERO ROMANO 
 
@@ -273,6 +271,7 @@ while STAY_ALIVE:
         GAME_OVER = False
         
         score = 0
+        vida = 100
 
 
     clock.tick(60)
