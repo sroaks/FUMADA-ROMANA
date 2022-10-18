@@ -314,6 +314,8 @@ while STAY_ALIVE:
             img_vida = pygame.image.load("recursos/25.png").convert_alpha()
         else:
             STAY_ALIVE = False
+    if t == 60:
+        STAY_ALIVE = False
 
 
 
@@ -378,7 +380,7 @@ while STAY_ALIVE:
     ventana.blit(pygame.transform.rotate(img_brujula_v,grados_viento),POSI_BRUJ)
 
     draw_text(str(N), font_2, (amarillo), ventana, 375, 620)
-    draw_text(str(t),font,(negro), ventana, 20, 20)
+    draw_text(str(t),font_2,(amarillo), ventana, 19, 650)
     draw_text('Vel-viento m/s:',font,(rojo),ventana,450,10)
     draw_text(str(velocidad_viento),font,(rojo),ventana,545,10)
   
