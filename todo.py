@@ -18,7 +18,7 @@ pygame.display.set_caption("SPQR")
 clock = pygame.time.Clock()
 
 font = pygame.font.SysFont('Arial', 15)
-fotn_2 = pygame.font.SysFont('Arial', 25)
+font_2 = pygame.font.SysFont('Bauer', 25)
 
 def draw_text(text,font,color,ventana,x,y):
     textobj = font.render(text,1,color)
@@ -377,7 +377,7 @@ while STAY_ALIVE:
     ventana.blit(img_grados_v, POSI_GRADOS)
     ventana.blit(pygame.transform.rotate(img_brujula_v,grados_viento),POSI_BRUJ)
 
-    draw_text(str(N), font, (negro), ventana, 400, 20)
+    draw_text(str(N), font_2, (amarillo), ventana, 375, 620)
     draw_text(str(t),font,(negro), ventana, 20, 20)
     draw_text('Vel-viento m/s:',font,(rojo),ventana,450,10)
     draw_text(str(velocidad_viento),font,(rojo),ventana,545,10)
