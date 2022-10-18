@@ -2,6 +2,8 @@ import pygame, random, sys
 
 from tiempop import *
 
+from nave import *
+
 ancho = 800
 alto = 600
 negro = (0, 0, 0)
@@ -46,65 +48,7 @@ TO DO LIST:
 """
 # MI NAVE
 
-class Nave(pygame.sprite.Sprite): # Clase base simple para objetos de juego visibles.
-    def __init__(self): # inicio la clase
-        super().__init__() #  superclase sprite
-        self.image = pygame.image.load("recursos/nave/NORMAL.png").convert_alpha()
-        self.image.set_colorkey(negro) # quitar borde negro
-        self.rect = self.image.get_rect() # Saco la recta de la imagen para definir su posicion
-        self.rect.centerx = 25 # X
-        self.rect.centery = 300 # Y
-        self.speed_x = 0 # este pobreto 100pre será 0... (F)
-        self.speed_y = 0
-        self.sumayup = 0
-        self.sumaydw = 0
-        self.sumax = 0
-        self.vida = 100
 
-    def update(self):
-        presiona = pygame.key.get_pressed()
-        self.speed_x = 0 # vel X siempre será 0
-        self.speed_y = 0 # velocidad Y
-        self.contadory = 0 # para darle la aceleración.
-
-        #reponer la imagen estatica
-        if presiona != True:
-             self.image = pygame.image.load("recursos/nave/NORMAL.png").convert_alpha()   
-        # dar movimiento UP
-        if presiona[pygame.K_w]:
-            self.sumaydw = self.sumaydw*0 # multiplicamos * 0 para resetear (cambio de tecla)
-            if self.sumayup <= 40: # este valor lo saqué fijandome en que valor se quedaba presionando 2 sec aprox.
-                self.speed_y = -2
-                self.contadory = 1 # contador
-                self.image = pygame.image.load("recursos/nave/subir.png").convert_alpha() 
-            if self.sumayup > 40: 
-                self.speed_y = -5
-                self.image = pygame.image.load("recursos/nave/subir fuerte.png").convert_alpha() #por fin doy uso a mi tan preciada imagen.
-
-        # dar movimiento DOWN   
-        if presiona[pygame.K_s]:
-            self.sumayup = self.sumayup*0
-            if self.sumaydw <= 40:  
-                self.speed_y = 2
-                self.contadory = 1
-                self.image = pygame.image.load("recursos/nave/bajar.png").convert_alpha()
-            if self.sumaydw > 40:
-                self.speed_y = 5
-                self.image = pygame.image.load("recursos/nave/bajar fuerte.png").convert_alpha()
-
-        self.sumayup += self.contadory
-        self.sumaydw += self.contadory
-        self.rect.y += self.speed_y
-        #posicion inicial nave
-        if self.rect.bottom > alto:
-            self.rect.bottom = alto
-        if self.rect.bottom < 50:
-            self.rect.bottom = 50
-
-    def shoot(self):
-        bullet = Bullet(self.rect.centerx, self.rect.top)
-        all_sprites.add(bullet)
-        bullets.add(bullet)
 
 
 # METEORITOS
@@ -138,20 +82,7 @@ class Meteoritos(pygame.sprite.Sprite):
             self.speedy = random.randrange(-1,1)
 
 
-class Bullet(pygame.sprite.Sprite):
-	def __init__(self, x, y):
-		super().__init__()
-		self.image = pygame.image.load("recursos/nave/balazo_lokete.png")
-		self.image.set_colorkey(negro)
-		self.rect = self.image.get_rect()
-		self.rect.y = y
-		self.rect.centerx = x
-		self.speedx = 10
 
-	def update(self):
-		self.rect.x += self.speedx
-		if self.rect.x > 800:
-			self.kill() #esto hace desaparecer el balazo del tiron
 
 class Explosion(pygame.sprite.Sprite):
 	def __init__(self, center):
@@ -211,19 +142,6 @@ img_clima = pygame.image.load("recursos/efectos_clima/nube01.png").convert_alpha
 img_brujula_v = pygame.image.load("recursos/efectos_clima/brújula.png").convert_alpha()
 img_grados_v = pygame.image.load("recursos/efectos_clima/grados_brjula.png").convert_alpha()
 
-"""
-imgl=[]
-if clima == 'Clouds':
-    imgl_row= ['recursos/efectos_clima/nube00.png','recursos/efectos_clima/nube01.png','recursos/efectos_clima/nube02.png']
-if clima == 'Clear':
-    imgl_row= ['recursos/efectos_clima/sol00.png','recursos/efectos_clima/sol01.png','recursos/efectos_clima/sol03.png']
-if clima == 'Rain':
-    imgl_row= ['recursos/efectos_clima/nube01.png','recursos/efectos_clima/nube02.png','recursos/efectos_clima/nube03.png']
-
-for img in imgl_row:
-    imgl.append(pygame.image.load(img).convert_alpha())
-"""
-
 imgl = []
 for w in range(3):
 	file = 'rsecursos/efectos_clima/nube0{}.png'.format(w)
@@ -231,8 +149,6 @@ for w in range(3):
 	img.set_colorkey(negro)
 	#img_scale = pygame.transform.scale(img, (70, 70))
 	imgl.append(img)
-
-
 
 #-- SCORE EN NUMERO ROMANO 
 
@@ -246,13 +162,8 @@ nr=[
 # -----------------------------------------------------
 
 
-all_sprites = pygame.sprite.Group()
-bullets = pygame.sprite.Group()
 lista_de_meteoritos = pygame.sprite.Group()
-
-nave = Nave()
-
-all_sprites.add(nave)
+all_sprites = pygame.sprite.Group()
 
 for n in range(3):
     meteoritos=Meteoritos()

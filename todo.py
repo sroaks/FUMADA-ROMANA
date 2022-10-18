@@ -188,6 +188,8 @@ for img in lista_de_meteoritos:
     meteoritos_imagenes.append(pygame.image.load(img).convert_alpha())
 
 fondo = pygame.image.load("recursos/fondo.png").convert()
+interface = pygame.image.load("recursos/f_interface.png").convert_alpha()
+img_vida = pygame.image.load("recursos/100.png").convert_alpha()
 
 explosion_anim = []
 for i in range(7):
@@ -251,6 +253,7 @@ STAY_ALIVE = True
 
 aux = 1 # variable para tiempo numero entero
 while STAY_ALIVE:
+    
     t = pygame.time.get_ticks()//1000
     G = 0
     if aux == t:
@@ -297,7 +300,21 @@ while STAY_ALIVE:
 	# Colisiones jugador - meteoro
     hits = pygame.sprite.spritecollide(nave, lista_de_meteoritos, True)
     if hits:
-        STAY_ALIVE = False
+        nave.vida -= 25
+        meteor = Meteoritos()
+        all_sprites.add(meteor)
+        lista_de_meteoritos.add(meteor)
+        if nave.vida >= 100:
+            img_vida = pygame.image.load("recursos/100.png").convert_alpha()
+        elif nave.vida == 75:
+            img_vida = pygame.image.load("recursos/75.png").convert_alpha()
+        elif nave.vida == 50:
+            img_vida = pygame.image.load("recursos/50.png").convert_alpha()
+        elif nave.vida == 25:
+            img_vida = pygame.image.load("recursos/25.png").convert_alpha()
+        else:
+            STAY_ALIVE = False
+
 
 
     # SCORE N_ROMAN
@@ -347,8 +364,12 @@ while STAY_ALIVE:
     else:
         N=(nm+nc+nd+nu)
 
-
+    
     ventana.blit(fondo, [0, 0])
+    ventana.blit(interface, [0,585])
+
+    img_vida = pygame.transform.scale(img_vida, (158, 18))
+    ventana.blit(img_vida, [19,614])
 
     all_sprites.draw(ventana)
 
