@@ -1,6 +1,7 @@
 import pygame, random, sys
 
 from tiempop import *
+from roman_number import *
 
 ancho = 800
 alto = 600
@@ -220,16 +221,7 @@ for w in range(3):
 	img.set_colorkey(negro)
 	#img_scale = pygame.transform.scale(img, (70, 70))
 	imgl.append(img)
-
-#-- SCORE EN NUMERO ROMANO 
-
-nr=[
-    (1000,'M'), (500, 'D'),
-    (100,'C'), (50,'L'),
-    (10,'X'), (5,'V'),(1,'I')
-    ]
-
-    
+   
 # -----------------------------------------------------
 
 
@@ -275,6 +267,8 @@ while STAY_ALIVE:
         
         score = 0
         vida = 100
+        disparos = 0
+        acuraci = 0
 
 
     clock.tick(60)
@@ -283,6 +277,7 @@ while STAY_ALIVE:
             STAY_ALIVE = False
         elif event.type == pygame.KEYDOWN:
             if event.key == pygame.K_SPACE:
+                disparos += 1
                 nave.shoot()
         
       
@@ -314,57 +309,20 @@ while STAY_ALIVE:
             img_vida = pygame.image.load("recursos/25.png").convert_alpha()
         else:
             STAY_ALIVE = False
-    if t == 60:
+    if t == 60 and score < 30:
         STAY_ALIVE = False
+    if score == 30:
+        from SEGUNDO_LVL import *
 
 
 
     # SCORE N_ROMAN
 
     N=score
-    N="{:0>4d}".format(N)
-    Nlista=list(N)
+    N = roman_number(N)
 
-    millares=int(Nlista[0])
-    centenas=int(Nlista[1])
-    decenas=int(Nlista[2])
-    unidades=int(Nlista[3])
-    nu=""
-    nd=""
-    nc=""
-    nm=""
-    #unidades
-    if unidades<9 and unidades>=5:
-        nu=(nr[5][1]+(unidades-5)*nr[6][1])
-    elif unidades<4:
-        nu=(unidades*nr[6][1])
-    elif unidades==4:
-        nu='IV'
-    elif unidades==9:
-        nu='IX'
-    #decenas
-    if decenas<9 and decenas>=5:
-        nd=(nr[3][1]+((decenas-5)*nr[4][1]))
-    elif decenas>=1 and decenas<4:
-        nd=(nr[4][1])*decenas
-    elif decenas==4:
-        nd='XL'
-    elif decenas==9:
-        nd='XC'   
-    #centenas
-    if centenas<9 and centenas>=5:
-        nc=(nr[1][1]+(centenas-5)*nr[2][1])
-    elif centenas>=1 and centenas<4:
-        nc=(nr[2][1])*centenas
-    elif centenas==4:
-        nc='CD'
-    elif centenas==9:
-        nc='CM'
-    #millares
-    if millares>=1 and millares<4:
-        nm=(nr[0][1])*millares
-    else:
-        N=(nm+nc+nd+nu)
+    if disparos >0 and score >0:
+        acuraci = round((score/disparos)*100 , 2)
 
     
     ventana.blit(fondo, [0, 0])
@@ -380,6 +338,7 @@ while STAY_ALIVE:
     ventana.blit(pygame.transform.rotate(img_brujula_v,grados_viento),POSI_BRUJ)
 
     draw_text(str(N), font_2, (amarillo), ventana, 375, 620)
+    draw_text(str(acuraci)+'%', font_2, (amarillo), ventana, 500, 620)
     draw_text(str(t),font_2,(amarillo), ventana, 19, 650)
     draw_text('Vel-viento m/s:',font,(rojo),ventana,450,10)
     draw_text(str(velocidad_viento),font,(rojo),ventana,545,10)
