@@ -33,16 +33,19 @@ def draw_text(text,font,color,ventana,x,y):
 """
 """
 TO DO LIST:
-- Rotar los meteoritos (hecho, pero hay que ajustarlo)
-- PROYECTO BARRA DE VIDA, idea : 100 HP, según el meteorito te quita tanto. cuando vida 75% amarillo mitad naranja cuando -de la mitad rojo
+- Rotar los meteoritos (hecho, pero hay que ajustarlo) // ok pero debería pulir
+- PROYECTO BARRA DE VIDA, idea : 100 HP, según el meteorito te quita tanto. cuando vida 75% amarillo mitad naranja cuando -de la mitad rojo // ok
 - Base de datos de score
 - Editar los textos cada uno con una fuente color tamaño etc...
 - MENU
 - METER TIMING (QUE EMPIECE DETERMINADOS SEGUNDOS, PARE, SUME METEORITOS, DIFERENTES ENEMIGOS...)
 - diferenciar los sprites para poder darles el timing... meteoritos por un lado otros enemigos por otro etc, asi controlas más
-- DEFINIR WIN
+- DEFINIR WIN // ok
 - LVL 2
 - BASE DE DATOS en este enlace: https://www.youtube.com/watch?v=4FDVzF0Z9Yo&list=WL&index=5&ab_channel=UskoKruM2010
+- METER PAJARRACOS -1 SCORE - 1 VIDA
+- METER HP UP
+- CUANDO FINALIZA TIMING
 
 """
 # MI NAVE
