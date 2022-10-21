@@ -13,6 +13,7 @@ amarillo = (255,255,0)
 naranja = (255,165,0)
 rojo = (255,0,0)
 interface_p = (800,90)
+POSI_C = (400,300)
 
 pygame.init()
 ventana = pygame.display.set_mode((ancho, alto))
@@ -34,23 +35,25 @@ class Enemigo(pygame.sprite.Sprite):
         super().__init__()
         self.image = pygame.image.load("recursos/NAVE_2/ENEMI_01_02.png").convert_alpha()
         self.rect = self.image.get_rect()
-        self.image.set_colorkey(negro)
-        self.rect.centerx = 400 # X
+        #self.image.set_colorkey(blanco)
+        self.rect.centerx = random.randrange(250,400) # X
         self.rect.centery= 300 # Y
-        # A DETERMINAR LA VELOCIDAD
-        self.speedx = random.randrange(-1,1)
-        self.anchote = 0
-        self.largote = 0
+        self.speedx = 1
+        self.speedy = 1
+        self.anchote = 20
+        self.largote = 24
            
     def update(self):
         self.rect.centerx += self.speedx
-        self.anchote += 5
-        self.largote += 5
+        self.rect.centery += self.speedy
+        self.anchote += 10
+        self.largote += (self.anchote * 1.2)
         #self.image = pygame.transform.scale(self.image, (self.anchote, self.largote))
-        if self.rect.centerx < -50 or self.rect.centery > ancho + 50 :
+        if self.rect.centerx < 0 or self.rect.centery > ancho + 10 or self.rect.centery > 650:
             self.rect.centerx = 400 # X
             self.rect.centery= 300 # Y
             self.speedx = random.randrange(-1,1)
+            self.speedy = 1
             self.anchote = 0
             self.largote = 0
 
@@ -67,6 +70,7 @@ dungeon = pygame.image.load("recursos/NAVE_2/dungeon.png")
 interior = pygame.image.load("recursos/NAVE_2/interior nave.png")
 img = pygame.image.load("recursos/NAVE_2/cruceta1.png")
 cruceta_2 = pygame.image.load("recursos/NAVE_2/cruceta2.png")
+pictue=pygame.image.load("recursos/NAVE_2/ENEMI_01_02.png").convert_alpha()
 
 offset = [0, 0]
  
@@ -74,8 +78,13 @@ clicking = False
 right_clicking = False
 middle_click = False
 
+
+meteorito = pygame.image.load("recursos/METEORITOS/CCC.png")
+angul = 0
+
 while STAY_ALIVE:
     ventana.blit(dungeon, [0, 0])
+    picturet = pygame.transform.scale(pictue, (20,24))
     
     mx, my = pygame.mouse.get_pos()
     score = 0
@@ -84,19 +93,17 @@ while STAY_ALIVE:
     acuraci = 0
     rot = 0
     loc = [mx-40, my-40]
-    ventana.blit(pygame.transform.rotate(img, rot), (loc))
-    if clicking:
-        rot -= 90
-    if right_clicking:
-        rot += 90
+
 
     clock.tick(60)
     right_clicking = False
     presiona = pygame.mouse.get_pressed()
+
+    angul += 1   
+    meteorito = pygame.transform.rotate(meteorito,angul)
+    meteorito.get_rect()
     
     for event in pygame.event.get():
-        enemigo_sprites.update()
-        enemigo_sprites.draw(ventana)
         
         if event.type == pygame.QUIT:
             STAY_ALIVE = False     
@@ -104,7 +111,7 @@ while STAY_ALIVE:
             click = True
             if click == True and pygame.mouse.get_pressed() == (1, 0, 0):
                 img = cruceta_2
-                ventana.blit(pygame.transform.rotate(img, rot), (loc))
+                ventana.blit(img, (loc))
         if event.type == pygame.MOUSEBUTTONUP:
             click = False
             if click == False:
@@ -115,8 +122,15 @@ while STAY_ALIVE:
     #all_sprites.update()
 
     
+    enemigo_sprites.update()
+    enemigo_sprites.draw(ventana)
+    ventana.blit(pygame.transform.rotate(img, rot), (loc))
+    ventana.blit(meteorito,POSI_C)
 
-
+    """
+    
+    ventana.blit(picturet, POSI_C)
+    """
 
     """
 

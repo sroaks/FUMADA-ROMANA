@@ -20,6 +20,7 @@ clock = pygame.time.Clock()
 
 font = pygame.font.SysFont('Arial', 15)
 font_2 = pygame.font.SysFont('Bauer', 25)
+font_3 = pygame.font.SysFont('Bauer', 13)
 
 def draw_text(text,font,color,ventana,x,y):
     textobj = font.render(text,1,color)
@@ -206,8 +207,8 @@ for i in range(7):
 
 # ---------- metiendo clima -----------------------
 
-POSI_C = (700,15)
-POSI_BRUJ = (623, 37)
+POSI_C = (275,610)
+POSI_BRUJ = (200, 600)
 POSI_GRADOS = (600,15)
 # import de la API : clima
 clima = tiempo
@@ -215,15 +216,29 @@ clima = tiempo
 
 img_clima = pygame.image.load("recursos/efectos_clima/nube01.png").convert_alpha()
 img_brujula_v = pygame.image.load("recursos/efectos_clima/brújula.png").convert_alpha()
-img_grados_v = pygame.image.load("recursos/efectos_clima/grados_brjula.png").convert_alpha()
 
 imgl = []
-for w in range(3):
-	file = 'recursos/efectos_clima/nube0{}.png'.format(w)
-	img = pygame.image.load(file).convert_alpha()
-	img.set_colorkey(negro)
-	#img_scale = pygame.transform.scale(img, (70, 70))
-	imgl.append(img)
+if tiempo == "Clear":
+    for w in range(3):
+        file = 'recursos/efectos_clima/sol0{}.png'.format(w)
+        img = pygame.image.load(file).convert_alpha()
+        img.set_colorkey(negro)
+        #img_scale = pygame.transform.scale(img, (70, 70))
+        imgl.append(img)
+if tiempo == "Clouds":
+    for w in range(3):
+        file = 'recursos/efectos_clima/nube0{}.png'.format(w)
+        img = pygame.image.load(file).convert_alpha()
+        img.set_colorkey(negro)
+        #img_scale = pygame.transform.scale(img, (70, 70))
+        imgl.append(img)
+if tiempo == "Rain":
+    for w in range(3):
+        file = 'recursos/efectos_clima/rain0{}.png'.format(w)
+        img = pygame.image.load(file).convert_alpha()
+        img.set_colorkey(negro)
+        #img_scale = pygame.transform.scale(img, (70, 70))
+        imgl.append(img)
    
 # -----------------------------------------------------
 
@@ -337,14 +352,18 @@ while STAY_ALIVE:
     all_sprites.draw(ventana)
 
     ventana.blit(img_clima,POSI_C)
-    ventana.blit(img_grados_v, POSI_GRADOS)
     ventana.blit(pygame.transform.rotate(img_brujula_v,grados_viento),POSI_BRUJ)
 
     draw_text(str(N), font_2, (amarillo), ventana, 375, 620)
-    draw_text(str(acuraci)+'%', font_2, (amarillo), ventana, 500, 620)
+    draw_text('PRECISIÓN:', font_2, (amarillo), ventana, 455, 610)
+    draw_text(str(acuraci)+'%', font_2, (amarillo), ventana, 570, 612)
     draw_text(str(t),font_2,(amarillo), ventana, 19, 650)
-    draw_text('Vel-viento m/s:',font,(rojo),ventana,450,10)
-    draw_text(str(velocidad_viento),font,(rojo),ventana,545,10)
+    draw_text('Vel-viento m/s:',font_2,(amarillo),ventana,51,640)
+    draw_text(str(velocidad_viento),font_2,(amarillo),ventana,145,660)
+    draw_text('0º', font_3, (amarillo), ventana, 230, 605)
+    draw_text('90º', font_3, (amarillo), ventana, 260, 632)
+    draw_text('180º', font_3, (amarillo), ventana, 230, 665)
+    draw_text('270º', font_3, (amarillo), ventana, 195, 632)
   
     #pygame.draw.rect(ventana, (negro),(ancho/2,alto/2, 50, 50)) probando las capas.
 
