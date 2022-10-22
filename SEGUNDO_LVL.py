@@ -19,9 +19,9 @@ pygame.init()
 ventana = pygame.display.set_mode((ancho, alto))
 pygame.display.set_caption("SPQR")
 clock = pygame.time.Clock()
-
+t = pygame.time.get_ticks()
 font = pygame.font.SysFont('Arial', 15)
-font_2 = pygame.font.SysFont('Bauer', 25)
+font_2 = pygame.font.SysFont('Bauer', 50)
 
 def draw_text(text,font,color,ventana,x,y):
     textobj = font.render(text,1,color)
@@ -81,8 +81,14 @@ middle_click = False
 
 meteorito = pygame.image.load("recursos/METEORITOS/CCC.png")
 angul = 0
-
+t = pygame.time.get_ticks()//1000
+q = 0
 while STAY_ALIVE:
+    clock.tick(10)
+    if t > 0:
+        q += 1/10
+        q = round(q,1)
+    
     ventana.blit(dungeon, [0, 0])
     picturet = pygame.transform.scale(pictue, (20,24))
     
@@ -95,13 +101,10 @@ while STAY_ALIVE:
     loc = [mx-40, my-40]
 
 
-    clock.tick(60)
+    
     right_clicking = False
     presiona = pygame.mouse.get_pressed()
 
-    angul += 1   
-    meteorito = pygame.transform.rotate(meteorito,angul)
-    meteorito.get_rect()
     
     for event in pygame.event.get():
         
@@ -123,9 +126,10 @@ while STAY_ALIVE:
 
     
     enemigo_sprites.update()
-    enemigo_sprites.draw(ventana)
+    if q >= 5:
+        enemigo_sprites.draw(ventana)
     ventana.blit(pygame.transform.rotate(img, rot), (loc))
-    ventana.blit(meteorito,POSI_C)
+    
 
     """
     
@@ -161,5 +165,6 @@ while STAY_ALIVE:
     """
     
     ventana.blit(interior, [0, 0])
+    draw_text(str(q),font_2,(blanco), ventana, 40, 220)
     pygame.display.flip()
 pygame.quit()

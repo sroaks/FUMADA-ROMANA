@@ -27,5 +27,3 @@ temp_celsius, temp_fahrenheit = kelvin_to_celsius_fahrenheit(temp_kelvin)
 tiempo = response['weather'][0]['main']
 grados_viento = response['wind']['deg']
 velocidad_viento = response['wind']['speed']
-
-print(response)

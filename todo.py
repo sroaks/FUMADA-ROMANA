@@ -265,6 +265,10 @@ GAME_OVER = True
 STAY_ALIVE = True
 fx = 0
 aux = 1 # variable para tiempo numero entero
+"""
+Trae de la base de datos, el registro más alto y sumale 1
+N_PARTIDA = [00000]
+"""
 while STAY_ALIVE:
     ventana.blit(cielo, [0,0])
     t = pygame.time.get_ticks()//1000
@@ -319,6 +323,7 @@ while STAY_ALIVE:
         lista_de_meteoritos.add(meteor)
 		
 	# Colisiones jugador - meteoro
+    marcador = []
     hits = pygame.sprite.spritecollide(nave, lista_de_meteoritos, True)
     if hits:
         nave.vida -= 25
@@ -337,9 +342,13 @@ while STAY_ALIVE:
             STAY_ALIVE = False
     if t == 60 and score < 30:
         STAY_ALIVE = False
-    if score == 30:
-        from SEGUNDO_LVL import *
-
+    if score == 2:
+        marcador.append(t)
+        marcador.append(acuraci)
+        marcador.append(nave.vida)
+        from transicion_lvl2 import *
+        
+        #from SEGUNDO_LVL import *
 
 
     # SCORE N_ROMAN
