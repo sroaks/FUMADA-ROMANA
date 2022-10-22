@@ -192,9 +192,12 @@ lista_de_meteoritos=["recursos/METEORITOS/CCC.png","recursos/METEORITOS/I.png","
 for img in lista_de_meteoritos:
     meteoritos_imagenes.append(pygame.image.load(img).convert_alpha())
 
-fondo = pygame.image.load("recursos/fondo.png").convert()
+fondo = pygame.image.load("recursos/fondo.png").convert_alpha()
+fondo_02 = pygame.image.load("recursos/fono_02.png").convert_alpha()
 interface = pygame.image.load("recursos/f_interface.png").convert_alpha()
 img_vida = pygame.image.load("recursos/100.png").convert_alpha()
+coliseo = pygame.image.load("recursos/COLISEO.png").convert_alpha()
+ 
 
 explosion_anim = []
 for i in range(7):
@@ -257,13 +260,13 @@ for n in range(3):
     lista_de_meteoritos.add(meteoritos)
 
 
-
+cielo = pygame.image.load("recursos/cielo.png").convert_alpha()
 GAME_OVER = True
 STAY_ALIVE = True
-
+fx = 0
 aux = 1 # variable para tiempo numero entero
 while STAY_ALIVE:
-    
+    ventana.blit(cielo, [0,0])
     t = pygame.time.get_ticks()//1000
     G = 0
     if aux == t:
@@ -271,11 +274,16 @@ while STAY_ALIVE:
         x = list(divmod(t,3))
         if x[1] == 1:
             img_clima= imgl[0]
+            fx -= 3
         if x[1] == 2:
             img_clima= imgl[1]
+            fx -= 3
         if x[1] == 0:
             img_clima= imgl[2]
+            fx -= 3
     
+    
+    ventana.blit(fondo_02, [fx, 0])
     # ROTACIÓN BRUJULA SEGUN GRADOS API
 
     
@@ -344,6 +352,7 @@ while STAY_ALIVE:
 
     
     ventana.blit(fondo, [0, 0])
+    ventana.blit(coliseo, [fx+800, 500])
     ventana.blit(interface, [0,585])
 
     img_vida = pygame.transform.scale(img_vida, (158, 18))
