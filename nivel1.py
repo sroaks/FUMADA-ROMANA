@@ -2,11 +2,42 @@ import pygame, random, sys
 from tiempop import *
 from roman_number import *
 from transicion_lvl2 import transicion
+import sqlite3
+
+"""
+"""
+"""
+    TO DO LIST:
+    - Rotar los meteoritos (hecho, pero hay que ajustarlo) // ok pero debería pulir
+    - PROYECTO BARRA DE VIDA, idea : 100 HP, según el meteorito te quita tanto. cuando vida 75% amarillo mitad naranja cuando -de la mitad rojo // ok
+    - Base de datos de score
+    - Editar los textos cada uno con una fuente color tamaño etc...
+    - MENU
+    - METER TIMING (QUE EMPIECE DETERMINADOS SEGUNDOS, PARE, SUME METEORITOS, DIFERENTES ENEMIGOS...)
+    - diferenciar los sprites para poder darles el timing... meteoritos por un lado otros enemigos por otro etc, asi controlas más
+    - DEFINIR WIN // ok
+    - LVL 2
+    - BASE DE DATOS en este enlace: https://www.youtube.com/watch?v=4FDVzF0Z9Yo&list=WL&index=5&ab_channel=UskoKruM2010
+    - METER PAJARRACOS -1 SCORE - 1 VIDA
+    - METER HP UP
+    - CUANDO FINALIZA TIMING
+
+"""
+
+
 
 pygame.init()
 clock = pygame.time.Clock()
 
 def game():
+    # ----------- BASE DE DATOS --------------------------------
+    mi_conexion = sqlite3.connect("database/miprimeradb.sqlite3")
+    cursor = mi_conexion.cursor()
+    cursor.execute("SELECT max(ID) FROM puntuacion")
+    N_PARTIDA = cursor.fetchall()
+    N_PARTIDA = list(N_PARTIDA[0])
+    N_PARTIDA= (N_PARTIDA[0]+1)
+    # ----------- BASE DE DATOS --------------------------------
     ancho = 800
     alto = 600
     negro = (0, 0, 0)
@@ -32,27 +63,6 @@ def game():
         textrect.topleft = (x,y)
         ventana.blit(textobj,textrect)
 
-
-
-    """
-    """
-    """
-    TO DO LIST:
-    - Rotar los meteoritos (hecho, pero hay que ajustarlo) // ok pero debería pulir
-    - PROYECTO BARRA DE VIDA, idea : 100 HP, según el meteorito te quita tanto. cuando vida 75% amarillo mitad naranja cuando -de la mitad rojo // ok
-    - Base de datos de score
-    - Editar los textos cada uno con una fuente color tamaño etc...
-    - MENU
-    - METER TIMING (QUE EMPIECE DETERMINADOS SEGUNDOS, PARE, SUME METEORITOS, DIFERENTES ENEMIGOS...)
-    - diferenciar los sprites para poder darles el timing... meteoritos por un lado otros enemigos por otro etc, asi controlas más
-    - DEFINIR WIN // ok
-    - LVL 2
-    - BASE DE DATOS en este enlace: https://www.youtube.com/watch?v=4FDVzF0Z9Yo&list=WL&index=5&ab_channel=UskoKruM2010
-    - METER PAJARRACOS -1 SCORE - 1 VIDA
-    - METER HP UP
-    - CUANDO FINALIZA TIMING
-
-    """
     # MI NAVE
 
     class Nave(pygame.sprite.Sprite): # Clase base simple para objetos de juego visibles.
@@ -185,10 +195,6 @@ def game():
                     self.rect = self.image.get_rect()
                     self.rect.center = center
 
-
-
-
-
     # ZONA DE DECLARAR IMAGENES
 
     meteoritos_imagenes=[]
@@ -210,7 +216,6 @@ def game():
         img.set_colorkey(negro)
         img_scale = pygame.transform.scale(img, (70, 70))
         explosion_anim.append(img_scale)
-
 
     # ---------- metiendo clima -----------------------
 
@@ -297,8 +302,7 @@ def game():
         
         ventana.blit(fondo_02, [fx, 0])
         # ROTACIÓN BRUJULA SEGUN GRADOS API
-
-        
+       
         if GAME_OVER:
             
             GAME_OVER = False
@@ -307,7 +311,7 @@ def game():
             nave.vida = 100
             disparos = 0
             acuraci = 0
-
+            score_tt = 0
 
         clock.tick(60)
         for event in pygame.event.get():
@@ -317,8 +321,7 @@ def game():
                 if event.key == pygame.K_SPACE:
                     disparos += 1
                     nave.shoot()
-            
-        
+                  
         all_sprites.update()
         # Colisiones disparos
         hits = pygame.sprite.groupcollide(lista_de_meteoritos, bullets, True, True)
@@ -351,13 +354,21 @@ def game():
         if t2 == 60 and score < 30:
             STAY_ALIVE = False
         if score == 10:
+            score_tt = nave.vida+acuraci-t2
+            marcador.append(N_PARTIDA)
             marcador.append(t2)
             marcador.append(acuraci)
             marcador.append(nave.vida)
-            transicion()
+            marcador.append(round(score_tt,2))
+            marcador = tuple(marcador)
+            print(marcador)
             
-            #from SEGUNDO_LVL import *
-
+            cursor.execute("INSERT INTO puntuacion VALUES "\
+                "{}".format(marcador))
+            mi_conexion.commit()
+            mi_conexion.close()
+            
+            transicion()
 
         # SCORE N_ROMAN
 

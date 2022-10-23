@@ -21,7 +21,7 @@ def draw_text(text, font, color, surface, x, y):
     textrect.topleft = (x, y)
     surface.blit(textobj, textrect)
 def main_menu(): 
-    navey = 300
+    navey = 300 
     click = False
     while True:
         mainClock.tick(30)
