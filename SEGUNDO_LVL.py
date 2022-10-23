@@ -11,6 +11,7 @@ clock = pygame.time.Clock()
 
 
 def segundolvl():
+    pygame.mouse.set_visible(False)
     t = pygame.time.get_ticks()
     font_2 = pygame.font.SysFont('Bauer', 50)
 

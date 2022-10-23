@@ -273,13 +273,17 @@ def game():
     Trae de la base de datos, el registro más alto y sumale 1
     N_PARTIDA = [00000]
     """
+    t = pygame.time.get_ticks()//1000
+    t2 = 0
     while STAY_ALIVE:
         ventana.blit(cielo, [0,0])
-        t = pygame.time.get_ticks()//1000
-        G = 0
-        if aux == t:
+        if t > 0:
+            t2 += 0.01
+            t2 = round(t2,2)
+        
+        if aux == t2:
             aux += 1
-            x = list(divmod(t,3))
+            x = list(divmod(t2,3))
             if x[1] == 1:
                 img_clima= imgl[0]
                 fx -= 3
@@ -300,7 +304,7 @@ def game():
             GAME_OVER = False
             
             score = 0
-            vida = 100
+            nave.vida = 100
             disparos = 0
             acuraci = 0
 
@@ -344,10 +348,10 @@ def game():
                 img_vida = pygame.image.load("recursos/25.png").convert_alpha()
             else:
                 STAY_ALIVE = False
-        if t == 60 and score < 30:
+        if t2 == 60 and score < 30:
             STAY_ALIVE = False
-        if score == 2:
-            marcador.append(t)
+        if score == 10:
+            marcador.append(t2)
             marcador.append(acuraci)
             marcador.append(nave.vida)
             transicion()
@@ -360,7 +364,7 @@ def game():
         N=score
         N = roman_number(N)
 
-        if disparos >0 and score >0:
+        if disparos > 0 and score > 0:
             acuraci = round((score/disparos)*100 , 2)
 
         
@@ -379,7 +383,7 @@ def game():
         draw_text(str(N), font_2, (amarillo), ventana, 375, 620)
         draw_text('PRECISIÓN:', font_2, (amarillo), ventana, 455, 610)
         draw_text(str(acuraci)+'%', font_2, (amarillo), ventana, 570, 612)
-        draw_text(str(t),font_2,(amarillo), ventana, 19, 650)
+        draw_text(str(t2),font_2,(amarillo), ventana, 19, 650)
         draw_text('Vel-viento m/s:',font_2,(amarillo),ventana,51,640)
         draw_text(str(velocidad_viento),font_2,(amarillo),ventana,145,660)
         draw_text('0º', font_3, (amarillo), ventana, 230, 605)
