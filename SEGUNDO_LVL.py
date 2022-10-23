@@ -1,13 +1,8 @@
-import pygame
+import pygame, random
 
-from tiempop import *
-from roman_number import *
-from test import *
 
 pygame.init()
 clock = pygame.time.Clock()
-
-
 
 
 def segundolvl():
