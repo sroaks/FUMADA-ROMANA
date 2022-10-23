@@ -1,6 +1,7 @@
 import pygame, random, sys
 from SEGUNDO_LVL import segundolvl
 from roman_number import *
+import sqlite3
 
 pygame.init()
 clock = pygame.time.Clock()
@@ -9,6 +10,12 @@ clock = pygame.time.Clock()
 
 
 def transicion():
+    mi_conexion = sqlite3.connect("database/miprimeradb.sqlite3")
+    cursor = mi_conexion.cursor()
+    cursor.execute("SELECT MAX (ID) , SCORE FROM puntuacion")
+    # PARA VER LAS PUNTUACIONES MAS ALTAScursor.execute("SELECT * FROM puntuacion ORDER BY SCORE DESC LIMIT 5")
+    puntuachione = cursor.fetchall()
+
     ancho = 800
     alto = 600
     ventana = pygame.display.set_mode((ancho, 600))
@@ -57,12 +64,10 @@ def transicion():
             if event.type == pygame.QUIT:
                 STAY_ALIVE = False
 
-        """
-        Te traes de la BASES , los datos del registro más alto (que será el último y el de esta partida)
-        draw_text("str(marcador)", font_2, (amarillo), ventana, 375, 620)
-        """
 
         draw_text("FELICIDADES, HAS PASADO EL PRIMER NIVEL", font_2, (negro), ventana, 50, 50)
+        draw_text("id Partida|PUNTUACIÓN",font_2, (negro), ventana, 50, 80)
+        draw_text(str(puntuachione),font_2, (negro), ventana, 50, 100)
 
         pygame.display.flip()
     pygame.quit()
