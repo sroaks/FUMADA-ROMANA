@@ -5,7 +5,7 @@ mainClock = pygame.time.Clock()
 from pygame.locals import *
 pygame.init()
 pygame.display.set_caption("SPQR")
-ventana = pygame.display.set_mode((500, 500),0,32)
+ventana = pygame.display.set_mode((500, 500))
 
 pygame.mouse.set_visible(False)
 fondo_m = pygame.image.load('recursos/main_menu.png').convert_alpha()
@@ -14,7 +14,7 @@ cursor_img = pygame.image.load('recursos/puntero.png').convert_alpha()
 cursor_img_rect = cursor_img.get_rect()
 nave_menu = pygame.image.load('recursos/navemenu.png').convert_alpha()
 font = pygame.font.SysFont(None, 20)
- 
+
 def draw_text(text, font, color, surface, x, y):
     textobj = font.render(text, 1, color)
     textrect = textobj.get_rect()

@@ -3,6 +3,7 @@ from tiempop import *
 from roman_number import *
 from transicion_lvl2 import transicion
 import sqlite3
+pygame.mixer.init()
 
 """
 """
@@ -53,7 +54,6 @@ def game():
     pygame.display.set_caption("SPQR")
     clock = pygame.time.Clock()
 
-    font = pygame.font.SysFont('Arial', 15)
     font_2 = pygame.font.SysFont('Bauer', 25)
     font_3 = pygame.font.SysFont('Bauer', 13)
 
@@ -124,7 +124,7 @@ def game():
             bullet = Bullet(self.rect.centerx, self.rect.top)
             all_sprites.add(bullet)
             bullets.add(bullet)
-
+            laser_sound.play()
 
     # METEORITOS
 
@@ -263,6 +263,10 @@ def game():
 
     all_sprites.add(nave)
 
+    laser_sound = pygame.mixer.Sound("recursos/SONIDO/laser5.ogg")
+    explosion_sound = pygame.mixer.Sound("recursos/SONIDO/explosion.wav")
+
+
     for n in range(3):
         meteoritos=Meteoritos()
         all_sprites.add(meteoritos)
@@ -327,6 +331,7 @@ def game():
         hits = pygame.sprite.groupcollide(lista_de_meteoritos, bullets, True, True)
         for hit in hits:
             score += 1
+            explosion_sound.play()
             explosion = Explosion(hit.rect.center)
             all_sprites.add(explosion)
             meteor = Meteoritos()
