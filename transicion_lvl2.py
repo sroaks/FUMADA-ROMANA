@@ -1,5 +1,4 @@
 import pygame, random, sys
-from SEGUNDO_LVL import segundolvl
 from roman_number import *
 import sqlite3
 
@@ -43,7 +42,7 @@ def transicion():
         if pnvx <= 200:
             pnvx += 1
         elif pnvy == 550:
-            segundolvl()
+            from SEGUNDO_LVL import segundolvl
         else:
             pnvx += 2
             pnvy += 1

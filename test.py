@@ -39,67 +39,29 @@ picture2=pygame.image.load("recursos/NAVE_2/ENEMI_01_02.png").convert_alpha()
 picture = [picture1 , picture2]
 contadorE = 0
 
-class Enemigo(pygame.sprite.Sprite):
-    def __init__(self):
-        super().__init__()
-        self.image = pygame.image.load("recursos/NAVE_2/ENEMI_01_02.png").convert_alpha()
-        self.image.set_colorkey(naranja)
-        self.rect = self.image.get_rect()
-        self.rect.centerx = random.randrange(150,550)
-        self.rect.centery = 300
-        self.posi = [self.rect.centerx,self.rect.centery]
-        self.vx = 0
-        self.vy = 0
-    def update(self):
-        t = pygame.time.get_ticks()//1000
-        self.priedra_angular_del_averno_infernal = list(divmod(t,2))
-        self.contador_infernal = 0
-        if self.priedra_angular_del_averno_infernal[1] == 0 and self.contador_infernal == 0:
-            self.image = pygame.image.load("recursos/NAVE_2/ENEMI_01_01.png").convert_alpha()
+class Enemigo():
+    def show(self):
+        ventana.blit(picture1,[200,300])
 
-            self.vx += 0.5
-            self.vy += 0.5
-
-            self.contador_infernal += 1
-        if self.priedra_angular_del_averno_infernal[1] == 1 and self.contador_infernal == 1:
-            self.image = pygame.image.load("recursos/NAVE_2/ENEMI_01_02.png").convert_alpha()
-            """
-            self.vx += 0.5
-            self.vy += 0.5
-            """
-            self.contador_infernal -= 1
-
-        print(self.contador_infernal)
-        self.rect.centerx += self.vx
-        self.rect.centery += self.vy
-        self.posi = [self.rect.centerx,self.rect.centery]
-        """
-        if self.x < 0 or self.y > ancho + 10 or self.y > 650:
-                self.rect.centerx = random.randrange(200,400)
-                self.y = 300
-                self.rect.centerx += 0.5
-                self.rect.centery += 0.5
-        """
-enemigo1_sprites = pygame.sprite.Group()
-
-for n in range(2):
-    enemigo = Enemigo()
-    enemigo1_sprites.add(enemigo)
-
-t = pygame.time.get_ticks()//1000
+enemigo = Enemigo()
 q = 0
-
-fps = 60
-segundos = 0
+aux = 1
+contadorimg = 0
 while STAY_ALIVE:
-    clock.tick(fps)
-    if t > 0:
-        q += 1
-        segundos = round(q * 1/fps ,0)
-        
     ventana.blit(dungeon, [0, 0])
-    picturet = pygame.transform.scale(picture1, (20,24))
-        
+    t = pygame.time.get_ticks()//1000
+    if aux == t:
+        aux += 1
+        q = t
+        x = list(divmod(q,2))
+        print(x[1])
+        if x[1] == 1:
+            picture = picture1
+        if x[1] == 0:
+            picture = picture2
+            
+    enemigo.show(picture)
+
     mx, my = pygame.mouse.get_pos()
     rot = 0
     loc = [mx-40, my-40]
@@ -118,12 +80,9 @@ while STAY_ALIVE:
             if click == False:
                 img = pygame.image.load("recursos/NAVE_2/cruceta1.png")
     
-    if segundos >= 2:
-        enemigo1_sprites.draw(ventana)
-        enemigo1_sprites.update()
  
     ventana.blit(img,loc)
     ventana.blit(interior, [0, 0])
-    draw_text(str(segundos),font_2,(blanco), ventana, 40, 220)
+    draw_text(str(q),font_2,(blanco), ventana, 40, 220)
     pygame.display.flip()
 pygame.quit()

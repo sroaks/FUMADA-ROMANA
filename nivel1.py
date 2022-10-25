@@ -3,7 +3,7 @@ from tiempop import *
 from roman_number import *
 from transicion_lvl2 import transicion
 import sqlite3
-pygame.mixer.init()
+
 
 """
 """
@@ -31,6 +31,7 @@ pygame.init()
 clock = pygame.time.Clock()
 
 def game():
+    pygame.mixer.init()
     # ----------- BASE DE DATOS --------------------------------
     mi_conexion = sqlite3.connect("database/miprimeradb.sqlite3")
     cursor = mi_conexion.cursor()
@@ -263,7 +264,8 @@ def game():
 
     all_sprites.add(nave)
 
-    laser_sound = pygame.mixer.Sound("recursos/SONIDO/laser5.ogg")
+    laser_sound = pygame.mixer.Sound("recursos/SONIDO/laser.wav")
+    meques_sound = pygame.mixer.Sound("recursos/SONIDO/mekes-coloraos.wav")
     explosion_sound = pygame.mixer.Sound("recursos/SONIDO/explosion.wav")
 
 
@@ -343,6 +345,7 @@ def game():
         hits = pygame.sprite.spritecollide(nave, lista_de_meteoritos, True)
         if hits:
             nave.vida -= 25
+            meques_sound.play()
             meteor = Meteoritos()
             all_sprites.add(meteor)
             lista_de_meteoritos.add(meteor)

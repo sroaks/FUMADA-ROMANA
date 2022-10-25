@@ -43,7 +43,7 @@ def segundolvl():
             super().__init__()
             self.image = pygame.image.load("recursos/NAVE_2/ENEMI_01_02.png").convert_alpha()
             self.rect = self.image.get_rect()
-            #self.image.set_colorkey(blanco)
+            self.image.set_colorkey(blanco)
             self.rect.centerx = random.randrange(250,400) # X
             self.rect.centery= 300 # Y
             self.speedx = 1
@@ -69,12 +69,12 @@ def segundolvl():
     enemigo_sprites.add(enemigo)
 
     t = pygame.time.get_ticks()//1000
-    q = 0
+    q3 = 0
     while STAY_ALIVE:
         clock.tick(10)
         if t > 0:
-            q += 1/10
-            q = round(q,1)
+            q3 += 1/10
+            q3 = round(q3,1)
         
         ventana.blit(dungeon, [0, 0])
         picturet = pygame.transform.scale(pictue, (20,24))
@@ -103,7 +103,7 @@ def segundolvl():
 
         
         enemigo_sprites.update()
-        if q >= 5:
+        if q3 >= 5:
             enemigo_sprites.draw(ventana)
         ventana.blit(pygame.transform.rotate(img, rot), (loc))
         
@@ -142,6 +142,7 @@ def segundolvl():
         """
         
         ventana.blit(interior, [0, 0])
-        draw_text(str(q),font_2,(blanco), ventana, 40, 220)
+        draw_text(str(q3),font_2,(blanco), ventana, 40, 220)
         pygame.display.flip()
     pygame.quit()
+segundolvl()

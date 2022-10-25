@@ -61,7 +61,4 @@ def main_menu():
         ventana.blit(nave_menu,[25,navey])
         ventana.blit(cursor_img, posi_cursor)
         pygame.display.update()
-
-    
- 
 main_menu()

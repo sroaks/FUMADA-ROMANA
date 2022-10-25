@@ -1,6 +1,5 @@
 import pygame, sys, random
 
-
 mainClock = pygame.time.Clock()
 from pygame.locals import *
 pygame.init()
@@ -37,27 +36,31 @@ def intro():
     parra.set_colorkey(negro)
     parra.get_rect()
     parra_sxy = 650
-
+    aux = 1
+    q = 0
+    musica.play()
     while True:
         t = pygame.time.get_ticks() // 1000
-        print(t) 
+        if aux == t:
+            aux += 1
+            q = t
+            print(q)
         ventana.fill((negro))
-        if click == False and t == 3:
-            musica.play(1)
-        if t >= 0 and  t < 4:
+        if q >= 0 and  q < 3:
             draw_text('Hace no mucho tiempo en una galaxia de aquí mismo...', font2, (255, 255, 255), ventana, 50, 250)
-        if t > 4 and t < 10:
+        if q >= 3 and t < 10:
             sqpr_sxy -= 10
             spqr_x += 5
             spqr = pygame.transform.smoothscale(spqr,(sqpr_sxy,sqpr_sxy))
             ventana.blit(spqr,[spqr_x,0])
-        if t >= 8 and t < 40:
+        if q >= 8 and q < 40:
             titulo_sxy -= 5
             ventana.blit(titulo,[200,titulo_sxy])
-        if t >= 10 and t < 55:
+        if q >= 10 and q < 55:
             parra_sxy -= 5
             ventana.blit(parra,[200,parra_sxy])
-        if t >= 55:
+        if q >= 50:
+            musica.stop()
             from menu import main_menu
 
 
@@ -68,6 +71,7 @@ def intro():
         
         if boton1.collidepoint((mx, my)):
             if click:
+                musica.stop()
                 from menu import main_menu
         
 
