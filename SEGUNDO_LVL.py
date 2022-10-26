@@ -38,51 +38,90 @@ def segundolvl():
     cruceta_2 = pygame.image.load("recursos/NAVE_2/cruceta2.png")
     pictue=pygame.image.load("recursos/NAVE_2/ENEMI_01_02.png").convert_alpha()
 
-    class Enemigo(pygame.sprite.Sprite):
+    class Enemi(pygame.sprite.Sprite):
         def __init__(self):
-            super().__init__()
-            self.image = pygame.image.load("recursos/NAVE_2/ENEMI_01_02.png").convert_alpha()
+            #super().__init__()
+            self.image = pygame.image.load("recursos/25.png").convert_alpha()
+            self.image.set_colorkey(negro)
             self.rect = self.image.get_rect()
-            self.image.set_colorkey(blanco)
-            self.rect.centerx = random.randrange(250,400) # X
-            self.rect.centery= 300 # Y
-            self.speedx = 1
-            self.speedy = 1
-            self.anchote = 20
-            self.largote = 24
-            
-        def update(self):
-            self.rect.centerx += self.speedx
-            self.rect.centery += self.speedy
-            self.anchote += 10
-            self.largote += (self.anchote * 1.2)
-            #self.image = pygame.transform.scale(self.image, (self.anchote, self.largote))
-            if self.rect.centerx < 0 or self.rect.centery > ancho + 10 or self.rect.centery > 650:
-                self.rect.centerx = 400 # X
-                self.rect.centery= 300 # Y
-                self.speedx = random.randrange(-1,1)
-                self.speedy = 1
-                self.anchote = 0
-                self.largote = 0
-    enemigo_sprites = pygame.sprite.Group()
-    enemigo = Enemigo()
-    enemigo_sprites.add(enemigo)
+            self.rect.centerx = random.randrange(150,350)
+            self.rect.centery = 200
+            self.vx = random.randrange(-1,1)
+            self.vy = 1
 
-    t = pygame.time.get_ticks()//1000
-    q3 = 0
+        def update(self,variable_tiempo):
+            self.rect.centerx += self.vx/10
+            self.rect.centery += self.vy
+            self.ancho = self.rect.centerx + 100
+            self.alto = self.rect.centery + 170
+            self.posicion_enemigo = [self.rect.centerx,self.rect.centery]
+            self.superficie_ocupa = [self.rect.centerx,self.rect.centery,self.ancho,self.alto]
+            self.variable_tiempo = variable_tiempo
+            if self.variable_tiempo == 0:
+                self.img = pygame.image.load("recursos/NAVE_2/ENEMI_01_01.png").convert_alpha()
+            if self.variable_tiempo == 1:
+                self.img = pygame.image.load("recursos/NAVE_2/ENEMI_01_02.png").convert_alpha()
+            if self.rect.centery > 600 or self.rect.centerx < 0 or self.rect.centerx > 800:
+                self.reset()
+
+            return ventana.blit(self.img,self.posicion_enemigo), self.superficie_ocupa
+              
+        def burst(self):
+            pos = pygame.mouse.get_pos()
+            if isonEnemi(self.rect.centerx, self.rect.centery, self.ancho, self.alto, pos):
+                self.reset()
+        
+        def reset(self):
+            self.rect.centerx = random.randrange(150,350)
+            self.rect.centery = 200
+            self.vx = random.randrange(-1,1)
+            self.vy = 1 
+            if self.variable_tiempo == 0:
+                self.img = pygame.image.load("recursos/NAVE_2/ENEMI_01_01.png").convert_alpha()
+            if self.variable_tiempo == 1:
+                self.img = pygame.image.load("recursos/NAVE_2/ENEMI_01_02.png").convert_alpha()
+
+    enemigos = []
+    numero_enemigos = random.randrange(1,5) 
+
+    """
+    enemi_sprites = pygame.sprite.Group()
+    
+    """
+    for n in range(numero_enemigos):
+        enemi = Enemi()
+        enemigos.append(enemi)
+    
+    def isonEnemi(x,y,ancho,alto,pos):
+        if (x < pos[0] < x + ancho) and (y < pos[1] < y + alto):
+            return True
+        else:
+            return False
+    
+    enemigo = Enemi()
+
+    risa_sound = pygame.mixer.Sound("recursos/SONIDO/risa.wav")
+    click = False
+    score = 0
+    t2 = 0
     while STAY_ALIVE:
-        clock.tick(10)
-        if t > 0:
-            q3 += 1/10
-            q3 = round(q3,1)
-        
+        clock.tick(60)
         ventana.blit(dungeon, [0, 0])
-        picturet = pygame.transform.scale(pictue, (20,24))
-        
+        t = pygame.time.get_ticks()//1000
+        vt = (divmod(t,2)[1])
+        if t > 0:
+            t2 += 0.01
+            t2 = round(t2,2)
         mx, my = pygame.mouse.get_pos()
-        rot = 0
+
+        posicion_raton = [mx,my]
+
+        if t2 >= 1:
+            enemi.update(vt)            
+            a, b = enemigo.update(vt)
+
+
         loc = [mx-40, my-40]
-        
         for event in pygame.event.get():
             
             if event.type == pygame.QUIT:
@@ -96,53 +135,16 @@ def segundolvl():
                 click = False
                 if click == False:
                     img = pygame.image.load("recursos/NAVE_2/cruceta1.png")
+                    if posicion_raton[0] >= b[0] and posicion_raton[0] <= b[2] and posicion_raton[1] >= b[1] and posicion_raton[1] <= b[3]:
+                        score += 1
+                        risa_sound.play()
+                        enemi.burst
 
-        
-        
-        #all_sprites.update()
-
-        
-        enemigo_sprites.update()
-        if q3 >= 5:
-            enemigo_sprites.draw(ventana)
-        ventana.blit(pygame.transform.rotate(img, rot), (loc))
-        
-
-        """
-        
-        ventana.blit(picturet, POSI_C)
-        """
-
-        """
-
-        N=score
-        N = roman_number(N)
-
-        if disparos >0 and score >0:
-            acuraci = round((score/disparos)*100 , 2)
-
-        
-        ventana.blit(fondo, [0, 0])
-        ventana.blit(interface, [0,585])
-
-        img_vida = pygame.transform.scale(img_vida, (158, 18))
-        ventana.blit(img_vida, [19,614])
-
-        all_sprites.draw(ventana)
-
-        ventana.blit(img_clima,POSI_C)
-        ventana.blit(img_grados_v, POSI_GRADOS)
-        ventana.blit(pygame.transform.rotate(img_brujula_v,grados_viento),POSI_BRUJ)
-
-        draw_text(str(N), font_2, (amarillo), ventana, 375, 620)
-        draw_text(str(acuraci)+'%', font_2, (amarillo), ventana, 500, 620)
-        draw_text(str(t),font_2,(amarillo), ventana, 19, 650)
-        draw_text('Vel-viento m/s:',font,(rojo),ventana,450,10)
-        draw_text(str(velocidad_viento),font,(rojo),ventana,545,10)
-        """
-        
+    
+        ventana.blit(img,loc)
         ventana.blit(interior, [0, 0])
-        draw_text(str(q3),font_2,(blanco), ventana, 40, 220)
+        draw_text(str(t2),font_2,(blanco), ventana, 40, 220)
+        draw_text(str(score),font_2,(blanco), ventana, 740, 220)
         pygame.display.flip()
     pygame.quit()
 segundolvl()
