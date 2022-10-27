@@ -280,10 +280,7 @@ def game():
     STAY_ALIVE = True
     fx = 0
     aux = 1 # variable para tiempo numero entero
-    """
-    Trae de la base de datos, el registro más alto y sumale 1
-    N_PARTIDA = [00000]
-    """
+
     t = pygame.time.get_ticks()//1000
     t2 = 0
     while STAY_ALIVE:
@@ -402,7 +399,7 @@ def game():
         draw_text(str(N), font_2, (amarillo), ventana, 375, 620)
         draw_text('PRECISIÓN:', font_2, (amarillo), ventana, 455, 610)
         draw_text(str(acuraci)+'%', font_2, (amarillo), ventana, 570, 612)
-        draw_text(str(t2),font_2,(amarillo), ventana, 19, 650)
+        draw_text("Tiempo: " +str(t2),font_2,(amarillo), ventana, 455, 650)
         draw_text('Vel-viento m/s:',font_2,(amarillo),ventana,51,640)
         draw_text(str(velocidad_viento),font_2,(amarillo),ventana,145,660)
         draw_text('0º', font_3, (amarillo), ventana, 230, 605)
@@ -414,3 +411,4 @@ def game():
 
         pygame.display.flip()
     pygame.quit()
+game()

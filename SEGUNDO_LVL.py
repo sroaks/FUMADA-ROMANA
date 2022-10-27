@@ -1,4 +1,7 @@
 import pygame, random
+import sys
+import random
+from math import *
 
 
 pygame.init()
@@ -6,11 +9,10 @@ clock = pygame.time.Clock()
 
 
 def segundolvl():
-    
-    
     pygame.mouse.set_visible(False)
-    t = pygame.time.get_ticks()
+    font_1 = pygame.font.SysFont('Bauer', 20)
     font_2 = pygame.font.SysFont('Bauer', 50)
+    risa_sound = pygame.mixer.Sound("recursos/SONIDO/risa.wav")
 
     def draw_text(text,font,color,ventana,x,y):
         textobj = font.render(text,1,color)
@@ -19,132 +21,244 @@ def segundolvl():
         ventana.blit(textobj,textrect)
 
     
-    ancho = 800
-    alto = 600
-    ventana = pygame.display.set_mode((ancho, alto))
+    w = 800
+    h = 600
+    ventana = pygame.display.set_mode((w, h))
     negro = (0, 0, 0)
     blanco = (255, 255, 255)
     verde = (173,255,47)
     amarillo = (255,255,0)
     naranja = (255,165,0)
     rojo = (255,0,0)
-    interface_p = (800,90)
-    POSI_C = (400,300)
-    STAY_ALIVE = True
+
+    
 
     dungeon = pygame.image.load("recursos/NAVE_2/dungeon.png")
     interior = pygame.image.load("recursos/NAVE_2/interior nave.png")
+    imgrot1 = pygame.image.load("recursos/NAVE_2/rompiento_01.png").convert_alpha()
+    imgrot2 = pygame.image.load("recursos/NAVE_2/rompiendo_02.png").convert_alpha()
+    imgrot3 = pygame.image.load("recursos/NAVE_2/rompiendo_03.png").convert_alpha()
+    img_luna = [imgrot1,imgrot2, imgrot3]
+
+    cuore = pygame.image.load("recursos/NAVE_2/cuore.png").convert_alpha()
+    cuore = pygame.transform.scale(cuore,(200,200))
+    cuore_roto = pygame.image.load("recursos/NAVE_2/cuore_02.png").convert_alpha()
+    cuore_roto = pygame.transform.scale(cuore_roto,(200,200))
+    corasao = [cuore,cuore_roto]
+
     img = pygame.image.load("recursos/NAVE_2/cruceta1.png")
     cruceta_2 = pygame.image.load("recursos/NAVE_2/cruceta2.png")
-    pictue=pygame.image.load("recursos/NAVE_2/ENEMI_01_02.png").convert_alpha()
 
-    class Enemi(pygame.sprite.Sprite):
+    img1 = pygame.image.load("recursos/NAVE_2/ENEMI_01_02.png").convert_alpha()
+    img2 = pygame.image.load("recursos/NAVE_2/ENEMI_01_01.png").convert_alpha()
+    imgs = [img1,img2]
+
+    class Enemigo:
         def __init__(self):
-            #super().__init__()
-            self.image = pygame.image.load("recursos/25.png").convert_alpha()
-            self.image.set_colorkey(negro)
-            self.rect = self.image.get_rect()
-            self.rect.centerx = random.randrange(150,350)
-            self.rect.centery = 200
-            self.vx = random.randrange(-1,1)
-            self.vy = 1
-
-        def update(self,variable_tiempo):
-            self.rect.centerx += self.vx/10
-            self.rect.centery += self.vy
-            self.ancho = self.rect.centerx + 100
-            self.alto = self.rect.centery + 170
-            self.posicion_enemigo = [self.rect.centerx,self.rect.centery]
-            self.superficie_ocupa = [self.rect.centerx,self.rect.centery,self.ancho,self.alto]
-            self.variable_tiempo = variable_tiempo
-            if self.variable_tiempo == 0:
-                self.img = pygame.image.load("recursos/NAVE_2/ENEMI_01_01.png").convert_alpha()
-            if self.variable_tiempo == 1:
-                self.img = pygame.image.load("recursos/NAVE_2/ENEMI_01_02.png").convert_alpha()
-            if self.rect.centery > 600 or self.rect.centerx < 0 or self.rect.centerx > 800:
-                self.reset()
-
-            return ventana.blit(self.img,self.posicion_enemigo), self.superficie_ocupa
-              
-        def burst(self):
-            pos = pygame.mouse.get_pos()
-            if isonEnemi(self.rect.centerx, self.rect.centery, self.ancho, self.alto, pos):
-                self.reset()
+            self.ancho = 95
+            self.alto = 88
+            self.x = random.randrange(300,450)
+            self.y = 250
+            self.speedx = random.randrange(-1,1)/5
+            self.speedy = 1/2
+    
+        def move(self):
+            global vida
+            self.y += self.speedy
+            self.x += self.speedx
+            if self.x >= h or self.x <= 0 or self.y >= h:
+                if hallegado(self.y):
+                    vida -= 10
+                    self.reset()
+                    
+        def show(self,vt):
+            self.img = imgs[vt]
+                
+            return ventana.blit(imgs[vt],[self.x,self.y])
         
+        def burst(self):
+            global score
+            pos = pygame.mouse.get_pos()
+            
+            if isonEnemi(self.x, self.y, self.ancho, self.alto, pos):
+                score += 1
+                risa_sound.play()
+                self.reset()
+                
         def reset(self):
-            self.rect.centerx = random.randrange(150,350)
-            self.rect.centery = 200
-            self.vx = random.randrange(-1,1)
-            self.vy = 1 
-            if self.variable_tiempo == 0:
-                self.img = pygame.image.load("recursos/NAVE_2/ENEMI_01_01.png").convert_alpha()
-            if self.variable_tiempo == 1:
-                self.img = pygame.image.load("recursos/NAVE_2/ENEMI_01_02.png").convert_alpha()
+            self.ancho = 95
+            self.alto = 88
+            self.x = random.randrange(300,450)
+            self.y = 250
+            self.speedx = random.randrange(-1,1)/5
+            self.speedy = 1/2
 
+    class Udemy():
+        def __init__(self):
+            self.ancho = 400
+            self.alto = 150
+            self.x = 200
+            self.y = 150
+            self.speedx = 0
+            self.speedy = 1/20
+
+        def move(self):
+            global vida
+            self.y += self.speedy
+            self.x += self.speedx
+            if self.x >= h or self.x <= 0 or self.y >= h:
+                if hallegado(450):
+                    vida -= 100
+
+        def show(self,vt):
+            if vt == 0:
+                self.ancho += 1/10
+                self.alto += 1.5/10
+            self.img = pygame.image.load("recursos/NAVE_2/boss_final_400x150.png").convert_alpha()
+            self.img = pygame.transform.scale(self.img,(self.ancho,self.alto))
+            return ventana.blit(self.img,[self.x,self.y])
+        
+        def burst(self):
+            global vida_enemigo
+            pos = pygame.mouse.get_pos()
+            
+            if isonEnemi(self.x, self.y, self.ancho, self.alto, pos):
+                vida_enemigo -= 1
+    
+    def showVida():
+        img_luna = [imgrot1,imgrot2, imgrot3]
+        color = verde
+        if vida > 75:
+            color = verde
+        if vida < 75 and vida > 50:
+            color = amarillo
+            img_luna = img_luna[0]
+            ventana.blit(img_luna,[0,0])
+        if vida < 50 and vida > 25:
+            color = naranja
+            img_luna = img_luna[1]
+            ventana.blit(img_luna,[0,0])
+        if vida < 25:
+            color = rojo
+            img_luna = img_luna[2]
+            ventana.blit(img_luna,[0,0])
+        scoreText = font_1.render("HP: " + str(vida), True, color)
+        ventana.blit(scoreText, (10,310))
+        pygame.draw.rect(ventana,(color),(0,330,vida,20))
+        
     enemigos = []
-    numero_enemigos = random.randrange(1,5) 
+    noenemigos = random.randrange(1,5)
 
-    """
-    enemi_sprites = pygame.sprite.Group()
-    
-    """
-    for n in range(numero_enemigos):
-        enemi = Enemi()
-        enemigos.append(enemi)
-    
-    def isonEnemi(x,y,ancho,alto,pos):
+    udemy = Udemy()
+
+
+    for i in range(noenemigos):
+        obj = Enemigo()
+        enemigos.append(obj)
+
+    def isonEnemi(x, y, ancho, alto, pos):
         if (x < pos[0] < x + ancho) and (y < pos[1] < y + alto):
             return True
         else:
             return False
-    
-    enemigo = Enemi()
 
-    risa_sound = pygame.mixer.Sound("recursos/SONIDO/risa.wav")
-    click = False
-    score = 0
-    t2 = 0
-    while STAY_ALIVE:
-        clock.tick(60)
-        ventana.blit(dungeon, [0, 0])
+    def hallegado(y):
+        if y >= h - 50:
+            return True
+        else:
+            return False
+
+    def pointer():
+        pos = pygame.mouse.get_pos()
+        r = 25
+        l = 20
+        color = rojo
+        for i in range(noenemigos):
+            if isonEnemi(enemigos[i].x, enemigos[i].y, enemigos[i].ancho, enemigos[i].alto, pos):
+                color = rojo
+        pygame.draw.ellipse(ventana, color, (pos[0] - r/2, pos[1] - r/2, r, r), 4)
+        pygame.draw.line(ventana, color, (pos[0], pos[1] - l/2), (pos[0], pos[1] - l), 4)
+        pygame.draw.line(ventana, color, (pos[0] + l/2, pos[1]), (pos[0] + l, pos[1]), 4)
+        pygame.draw.line(ventana, color, (pos[0], pos[1] + l/2), (pos[0], pos[1] + l), 4)
+        pygame.draw.line(ventana, color, (pos[0] - l/2, pos[1]), (pos[0] - l, pos[1]), 4) 
+
+    def close():
+        pygame.quit()
+        sys.exit()
+
+    
+    def game1():
+        global vida
+        vida = 100
+        global score
+        score = 0
+        global vida_enemigo
+        vida_enemigo = 10
+        STAY_ALIVE = True
         t = pygame.time.get_ticks()//1000
-        vt = (divmod(t,2)[1])
-        if t > 0:
-            t2 += 0.01
-            t2 = round(t2,2)
-        mx, my = pygame.mouse.get_pos()
+        t2 = 0
+        t3 = 0
+        while STAY_ALIVE:
+            ventana.blit(dungeon, [0, 0])
+            t = pygame.time.get_ticks()//1000
+            if t > 0:
+                t2 += 0.01
+                t2 = round(t2,2)
 
-        posicion_raton = [mx,my]
+            vt = (divmod(t,2)[1])
+            for event in pygame.event.get():
+                if event.type == pygame.QUIT:
+                    close()
+                if event.type == pygame.MOUSEBUTTONDOWN:
+                    udemy.burst()
+                    for i in range(noenemigos):
+                        enemigos[i].burst()
+                    
+                    
+                    
 
-        if t2 >= 1:
-            enemi.update(vt)            
-            a, b = enemigo.update(vt)
-
-
-        loc = [mx-40, my-40]
-        for event in pygame.event.get():
+            if vida == 0:
+                STAY_ALIVE = False
             
-            if event.type == pygame.QUIT:
-                STAY_ALIVE = False     
-            if event.type == pygame.MOUSEBUTTONDOWN:
-                click = True
-                if click == True and pygame.mouse.get_pressed() == (1, 0, 0):
-                    img = cruceta_2
-                    ventana.blit(img, (loc))
-            if event.type == pygame.MOUSEBUTTONUP:
-                click = False
-                if click == False:
-                    img = pygame.image.load("recursos/NAVE_2/cruceta1.png")
-                    if posicion_raton[0] >= b[0] and posicion_raton[0] <= b[2] and posicion_raton[1] >= b[1] and posicion_raton[1] <= b[3]:
-                        score += 1
-                        risa_sound.play()
-                        enemi.burst
 
-    
-        ventana.blit(img,loc)
-        ventana.blit(interior, [0, 0])
-        draw_text(str(t2),font_2,(blanco), ventana, 40, 220)
-        draw_text(str(score),font_2,(blanco), ventana, 740, 220)
-        pygame.display.flip()
-    pygame.quit()
+            if t2 >= 0 and t2 <= 1.5:
+                draw_text("BIENVENIDO AL SEGUNDO NIVEL",font_2,(blanco), ventana, 120, 150)
+            if t2 >= 1.5 and t2 <= 3:
+                draw_text("EL SUEÑO DE TODO PROFESOR...",font_2,(blanco), ventana, 120, 150)
+            if t2 >= 3 and t2 <= 4:
+                draw_text("PODER MATAR ALUMNOS!!",font_2,(blanco), ventana, 120, 150)
+
+            if t2 >= 3 and score <= 5:
+                for i in range(noenemigos):
+                    enemigos[i].show(vt)
+                for i in range(noenemigos):
+                    enemigos[i].move()
+            
+            if score >= 5:
+                if t > 0:
+                    t3 += 0.01
+                    t3 = round(t3,2)
+                if t3 >= 1 and t3 <= 2:
+                    draw_text("Parece que nos tenias ganas...",font_2,(blanco), ventana, 120, 150)
+                    ventana.blit(corasao[vt],[300,320])
+                if t3 >= 3 and t3 <= 5:
+                    draw_text("Última Sorpresa!!!!",font_2,(blanco), ventana, 220, 150)
+                if t3 >= 4 and vida_enemigo > 0:
+                    udemy.show(vt)
+                    udemy.move()
+                if vida_enemigo == 0:
+                    close()
+                                  
+
+            pointer()
+
+            showVida()
+
+            #ventana.blit(img,loc)
+            ventana.blit(interior, [0, 0])
+            draw_text(str(t2),font_2,(blanco), ventana, 20, 220)
+            draw_text(str(score),font_2,(blanco), ventana, 740, 220)
+            pygame.display.update()
+            clock.tick(60)
+    game1()
 segundolvl()

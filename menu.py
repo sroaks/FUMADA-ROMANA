@@ -1,5 +1,5 @@
 import pygame, sys, random
-from nivel1 import game
+
  
 mainClock = pygame.time.Clock()
 from pygame.locals import *
@@ -42,7 +42,7 @@ def main_menu():
         button_1 = ventana.blit(boton1, [155,150])
         if button_1.collidepoint((mx, my)):
             if click:
-                game()
+                from nivel1 import game
     
  
         click = False

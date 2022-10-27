@@ -1,3 +1,3 @@
 import pygame
 
-from menu import *
+from intro import *
