@@ -5,28 +5,6 @@ from transicion_lvl2 import transicion
 import sqlite3
 
 
-"""
-"""
-"""
-    TO DO LIST:
-    - Rotar los meteoritos (hecho, pero hay que ajustarlo) // ok pero debería pulir
-    - PROYECTO BARRA DE VIDA, idea : 100 HP, según el meteorito te quita tanto. cuando vida 75% amarillo mitad naranja cuando -de la mitad rojo // ok
-    - Base de datos de score
-    - Editar los textos cada uno con una fuente color tamaño etc...
-    - MENU
-    - METER TIMING (QUE EMPIECE DETERMINADOS SEGUNDOS, PARE, SUME METEORITOS, DIFERENTES ENEMIGOS...)
-    - diferenciar los sprites para poder darles el timing... meteoritos por un lado otros enemigos por otro etc, asi controlas más
-    - DEFINIR WIN // ok
-    - LVL 2
-    - BASE DE DATOS en este enlace: https://www.youtube.com/watch?v=4FDVzF0Z9Yo&list=WL&index=5&ab_channel=UskoKruM2010
-    - METER PAJARRACOS -1 SCORE - 1 VIDA
-    - METER HP UP
-    - CUANDO FINALIZA TIMING
-
-"""
-
-
-
 pygame.init()
 clock = pygame.time.Clock()
 
@@ -43,12 +21,8 @@ def game():
     ancho = 800
     alto = 600
     negro = (0, 0, 0)
-    blanco = (255, 255, 255)
-    verde = (173,255,47)
     amarillo = (255,255,0)
-    naranja = (255,165,0)
-    rojo = (255,0,0)
-    interface_p = (800,90)
+
 
     pygame.init()
     ventana = pygame.display.set_mode((ancho, 690))
@@ -224,14 +198,15 @@ def game():
     POSI_BRUJ = (200, 600)
     POSI_GRADOS = (600,15)
     # import de la API : clima
-    clima = tiempo
-
 
     img_clima = pygame.image.load("recursos/efectos_clima/nube01.png").convert_alpha()
     img_brujula_v = pygame.image.load("recursos/efectos_clima/brújula.png").convert_alpha()
-
+    lluvia_sound = pygame.mixer.Sound("recursos/SONIDO/lluvia.wav")
+    clear_sound = pygame.mixer.Sound("recursos/SONIDO/viento.wav")
+    
     imgl = []
     if tiempo == "Clear":
+        clear_sound.play()
         for w in range(3):
             file = 'recursos/efectos_clima/sol0{}.png'.format(w)
             img = pygame.image.load(file).convert_alpha()
@@ -239,6 +214,7 @@ def game():
             #img_scale = pygame.transform.scale(img, (70, 70))
             imgl.append(img)
     if tiempo == "Clouds":
+        clear_sound.play()
         for w in range(3):
             file = 'recursos/efectos_clima/nube0{}.png'.format(w)
             img = pygame.image.load(file).convert_alpha()
@@ -246,6 +222,7 @@ def game():
             #img_scale = pygame.transform.scale(img, (70, 70))
             imgl.append(img)
     if tiempo == "Rain":
+        lluvia_sound.play()
         for w in range(3):
             file = 'recursos/efectos_clima/rain0{}.png'.format(w)
             img = pygame.image.load(file).convert_alpha()
@@ -355,10 +332,18 @@ def game():
             elif nave.vida == 25:
                 img_vida = pygame.image.load("recursos/25.png").convert_alpha()
             else:
+                from derrota_lvl1 import derrota1
                 STAY_ALIVE = False
-        if t2 == 60 and score < 30:
+                clear_sound.stop()
+                lluvia_sound.stop()
+        if t2 >= 20 and score < 30:
+            from derrota_lvl1 import derrota1
+            clear_sound.stop()
+            lluvia_sound.stop()
             STAY_ALIVE = False
-        if score == 10:
+        if score == 30:
+            clear_sound.stop()
+            lluvia_sound.stop()
             score_tt = nave.vida+acuraci-t2
             marcador.append(N_PARTIDA)
             marcador.append(t2)

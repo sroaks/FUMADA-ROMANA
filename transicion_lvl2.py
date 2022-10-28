@@ -43,6 +43,7 @@ def transicion():
             pnvx += 1
         elif pnvy == 550:
             from SEGUNDO_LVL import segundolvl
+            STAY_ALIVE = False
         else:
             pnvx += 2
             pnvy += 1

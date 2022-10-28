@@ -4,6 +4,7 @@ import random
 from math import *
 
 
+
 pygame.init()
 clock = pygame.time.Clock()
 
@@ -24,7 +25,6 @@ def segundolvl():
     w = 800
     h = 600
     ventana = pygame.display.set_mode((w, h))
-    negro = (0, 0, 0)
     blanco = (255, 255, 255)
     verde = (173,255,47)
     amarillo = (255,255,0)
@@ -57,7 +57,7 @@ def segundolvl():
         def __init__(self):
             self.ancho = 95
             self.alto = 88
-            self.x = random.randrange(300,450)
+            self.x = random.randrange(100,550)
             self.y = 250
             self.speedx = random.randrange(-1,1)/5
             self.speedy = 1/2
@@ -86,45 +86,19 @@ def segundolvl():
                 self.reset()
                 
         def reset(self):
+            global score
             self.ancho = 95
             self.alto = 88
-            self.x = random.randrange(300,450)
+            self.x = random.randrange(100,550)
             self.y = 250
             self.speedx = random.randrange(-1,1)/5
-            self.speedy = 1/2
+            if score > 0 and score < 10:
+                self.speedy = 1
+            if score >= 10 and score < 20:
+                self.speedy = 2
+            if score >= 20:
+                self.speedy = 2.5
 
-    class Udemy():
-        def __init__(self):
-            self.ancho = 400
-            self.alto = 150
-            self.x = 200
-            self.y = 150
-            self.speedx = 0
-            self.speedy = 1/20
-
-        def move(self):
-            global vida
-            self.y += self.speedy
-            self.x += self.speedx
-            if self.x >= h or self.x <= 0 or self.y >= h:
-                if hallegado(450):
-                    vida -= 100
-
-        def show(self,vt):
-            if vt == 0:
-                self.ancho += 1/10
-                self.alto += 1.5/10
-            self.img = pygame.image.load("recursos/NAVE_2/boss_final_400x150.png").convert_alpha()
-            self.img = pygame.transform.scale(self.img,(self.ancho,self.alto))
-            return ventana.blit(self.img,[self.x,self.y])
-        
-        def burst(self):
-            global vida_enemigo
-            pos = pygame.mouse.get_pos()
-            
-            if isonEnemi(self.x, self.y, self.ancho, self.alto, pos):
-                vida_enemigo -= 1
-    
     def showVida():
         img_luna = [imgrot1,imgrot2, imgrot3]
         color = verde
@@ -147,10 +121,7 @@ def segundolvl():
         pygame.draw.rect(ventana,(color),(0,330,vida,20))
         
     enemigos = []
-    noenemigos = random.randrange(1,5)
-
-    udemy = Udemy()
-
+    noenemigos = 5
 
     for i in range(noenemigos):
         obj = Enemigo()
@@ -163,7 +134,7 @@ def segundolvl():
             return False
 
     def hallegado(y):
-        if y >= h - 50:
+        if y >= 525:
             return True
         else:
             return False
@@ -210,46 +181,42 @@ def segundolvl():
                 if event.type == pygame.QUIT:
                     close()
                 if event.type == pygame.MOUSEBUTTONDOWN:
-                    udemy.burst()
                     for i in range(noenemigos):
                         enemigos[i].burst()
-                    
-                    
-                    
+                      
 
-            if vida == 0:
+            if vida <= 0:
+                from derrota_lvl2 import derrota2
                 STAY_ALIVE = False
             
 
-            if t2 >= 0 and t2 <= 1.5:
+            if t2 >= 0 and t2 <= 1:
                 draw_text("BIENVENIDO AL SEGUNDO NIVEL",font_2,(blanco), ventana, 120, 150)
-            if t2 >= 1.5 and t2 <= 3:
+            if t2 >= 1 and t2 <= 2:
                 draw_text("EL SUEÑO DE TODO PROFESOR...",font_2,(blanco), ventana, 120, 150)
-            if t2 >= 3 and t2 <= 4:
-                draw_text("PODER MATAR ALUMNOS!!",font_2,(blanco), ventana, 120, 150)
+            if t2 >= 2 and t2 <= 3:
+                draw_text("PODER MATAR ALUMNOS!!",font_2,(blanco), ventana, 150, 150)
 
-            if t2 >= 3 and score <= 5:
+            if t2 >= 3 and score <= 30:
                 for i in range(noenemigos):
                     enemigos[i].show(vt)
                 for i in range(noenemigos):
                     enemigos[i].move()
             
-            if score >= 5:
+            if score >= 30:
                 if t > 0:
                     t3 += 0.01
                     t3 = round(t3,2)
                 if t3 >= 1 and t3 <= 2:
                     draw_text("Parece que nos tenias ganas...",font_2,(blanco), ventana, 120, 150)
-                    ventana.blit(corasao[vt],[300,320])
-                if t3 >= 3 and t3 <= 5:
-                    draw_text("Última Sorpresa!!!!",font_2,(blanco), ventana, 220, 150)
+                    ventana.blit(corasao[vt],[300,300])
+                if t3 >= 2 and t3 <= 4:
+                    draw_text("Última Sorpresa!!!!",font_2,(blanco), ventana, 220, 200)
                 if t3 >= 4 and vida_enemigo > 0:
-                    udemy.show(vt)
-                    udemy.move()
-                if vida_enemigo == 0:
-                    close()
-                                  
-
+                     from tercerlvl import tercerlvl
+                     STAY_ALIVE = False
+   
+                                
             pointer()
 
             showVida()

@@ -10,7 +10,7 @@ la API lasque de aqui : https://home.openweathermap.org/
 """
 BASE_URL = "http://api.openweathermap.org/data/2.5/weather?"
 API_KEY = "d1e390c59df437eb10ad140efdb81f5b"
-CITY = "Madrid"
+CITY = "Vigo"
 
 def kelvin_to_celsius_fahrenheit(kelvin):
     celsius = kelvin - 273.15
